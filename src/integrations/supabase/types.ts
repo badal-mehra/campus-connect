@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      tutor_packages: {
+        Row: {
+          created_at: string
+          description: string
+          duration: string
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          sessions: number
+          tutor_id: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          duration?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          price: number
+          sessions?: number
+          tutor_id: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          duration?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          sessions?: number
+          tutor_id?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
