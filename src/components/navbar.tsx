@@ -31,6 +31,13 @@ export function Navbar() {
             Become a Tutor
           </Link>
           <Link
+            to="/dashboard/$id"
+            params={{ id: "aarav-sharma" }}
+            className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            Tutor Dashboard
+          </Link>
+          <Link
             to="/"
             hash="how-it-works"
             className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
@@ -60,6 +67,7 @@ export function Navbar() {
           <div className="flex flex-col gap-1 px-4 py-3">
             <Link to="/tutors" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary">Find Tutor</Link>
             <Link to="/become-tutor" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary">Become a Tutor</Link>
+            <Link to="/dashboard/$id" params={{ id: "aarav-sharma" }} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary">Tutor Dashboard</Link>
             <Button variant="ghost" size="sm" className="justify-start">Login</Button>
             <Button asChild size="sm" variant="brand">
               <Link to="/tutors" onClick={() => setOpen(false)}>Find a Tutor</Link>
