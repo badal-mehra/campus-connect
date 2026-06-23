@@ -30,7 +30,7 @@ export const Route = createFileRoute("/tutors/$id")({
 });
 
 function TutorProfile() {
-  const { tutor } = Route.useLoaderData();
+  const { tutor } = Route.useLoaderData() as { tutor: import("@/lib/tutors-data").Tutor };
   const totalReviews = Object.values(tutor.ratingBreakdown).reduce((a, b) => a + b, 0);
 
   return (

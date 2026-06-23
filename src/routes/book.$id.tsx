@@ -43,7 +43,7 @@ function nextDays(n: number) {
 }
 
 function BookingPage() {
-  const { tutor } = Route.useLoaderData();
+  const { tutor } = Route.useLoaderData() as { tutor: import("@/lib/tutors-data").Tutor };
   const { pkg: pkgParam } = Route.useSearch();
   const navigate = useNavigate();
   const initial = tutor.packages.find((p) => p.id === pkgParam) ?? tutor.packages[0];
