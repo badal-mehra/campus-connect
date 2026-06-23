@@ -11,10 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TutorsRouteImport } from './routes/tutors'
 import { Route as BecomeTutorRouteImport } from './routes/become-tutor'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TutorsIdRouteImport } from './routes/tutors.$id'
 import { Route as DashboardIdRouteImport } from './routes/dashboard.$id'
 import { Route as BookIdRouteImport } from './routes/book.$id'
+import { Route as AuthenticatedMyPackagesRouteImport } from './routes/_authenticated/my-packages'
 
 const TutorsRoute = TutorsRouteImport.update({
   id: '/tutors',
@@ -24,6 +27,15 @@ const TutorsRoute = TutorsRouteImport.update({
 const BecomeTutorRoute = BecomeTutorRouteImport.update({
   id: '/become-tutor',
   path: '/become-tutor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -46,19 +58,28 @@ const BookIdRoute = BookIdRouteImport.update({
   path: '/book/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedMyPackagesRoute = AuthenticatedMyPackagesRouteImport.update({
+  id: '/my-packages',
+  path: '/my-packages',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/become-tutor': typeof BecomeTutorRoute
   '/tutors': typeof TutorsRouteWithChildren
+  '/my-packages': typeof AuthenticatedMyPackagesRoute
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/become-tutor': typeof BecomeTutorRoute
   '/tutors': typeof TutorsRouteWithChildren
+  '/my-packages': typeof AuthenticatedMyPackagesRoute
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRoute
@@ -66,8 +87,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/become-tutor': typeof BecomeTutorRoute
   '/tutors': typeof TutorsRouteWithChildren
+  '/_authenticated/my-packages': typeof AuthenticatedMyPackagesRoute
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRoute
@@ -76,24 +100,31 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/become-tutor'
     | '/tutors'
+    | '/my-packages'
     | '/book/$id'
     | '/dashboard/$id'
     | '/tutors/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/become-tutor'
     | '/tutors'
+    | '/my-packages'
     | '/book/$id'
     | '/dashboard/$id'
     | '/tutors/$id'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/become-tutor'
     | '/tutors'
+    | '/_authenticated/my-packages'
     | '/book/$id'
     | '/dashboard/$id'
     | '/tutors/$id'
@@ -101,6 +132,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   BecomeTutorRoute: typeof BecomeTutorRoute
   TutorsRoute: typeof TutorsRouteWithChildren
   BookIdRoute: typeof BookIdRoute
@@ -121,6 +154,20 @@ declare module '@tanstack/react-router' {
       path: '/become-tutor'
       fullPath: '/become-tutor'
       preLoaderRoute: typeof BecomeTutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -151,8 +198,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/my-packages': {
+      id: '/_authenticated/my-packages'
+      path: '/my-packages'
+      fullPath: '/my-packages'
+      preLoaderRoute: typeof AuthenticatedMyPackagesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedMyPackagesRoute: typeof AuthenticatedMyPackagesRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedMyPackagesRoute: AuthenticatedMyPackagesRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface TutorsRouteChildren {
   TutorsIdRoute: typeof TutorsIdRoute
@@ -167,6 +232,8 @@ const TutorsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   BecomeTutorRoute: BecomeTutorRoute,
   TutorsRoute: TutorsRouteWithChildren,
   BookIdRoute: BookIdRoute,
