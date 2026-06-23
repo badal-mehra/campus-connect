@@ -31,6 +31,13 @@ export function Navbar() {
             Become a Tutor
           </Link>
           <Link
+            to="/dashboard/$id"
+            params={{ id: "aarav-sharma" }}
+            className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            Tutor Dashboard
+          </Link>
+          <Link
             to="/"
             hash="how-it-works"
             className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
