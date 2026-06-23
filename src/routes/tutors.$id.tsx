@@ -68,6 +68,37 @@ function TutorProfile() {
             <p className="text-base leading-relaxed text-foreground/80">{tutor.bio}</p>
           </Section>
 
+          <Section title="Academic profile">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <InfoBlock icon={GraduationCap} label="College" value={tutor.college} />
+              <InfoBlock icon={BookOpen} label="Branch & Year" value={`${tutor.branch} • ${tutor.year}`} />
+              <InfoBlock icon={Award} label="Current CGPA" value={`${tutor.cgpa.toFixed(2)} / 10`} />
+              <InfoBlock icon={BadgeCheck} label="Roll Number" value={tutor.rollNo} />
+              <InfoBlock icon={Timer} label="Experience" value={tutor.experience} />
+              <InfoBlock icon={Clock} label="Response time" value={tutor.responseTime} />
+            </div>
+          </Section>
+
+          <Section title="Contact & location">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <InfoBlock icon={Mail} label="Email" value={tutor.email} />
+              <InfoBlock icon={Phone} label="Phone" value={tutor.phone} />
+              <InfoBlock icon={MapPin} label="City" value={tutor.city} />
+              <InfoBlock icon={Globe} label="Languages" value={tutor.languages.join(", ")} />
+            </div>
+          </Section>
+
+          <Section title="Achievements">
+            <ul className="space-y-2">
+              {tutor.achievements.map((a) => (
+                <li key={a} className="flex items-start gap-2 rounded-xl border border-border bg-card p-3 text-sm">
+                  <Trophy className="mt-0.5 h-4 w-4 shrink-0 text-cyan-glow" />
+                  <span>{a}</span>
+                </li>
+              ))}
+            </ul>
+          </Section>
+
           <Section title="Grade-verified subjects">
             <div className="flex flex-wrap gap-2">
               {tutor.gradeProof.map((g) => (
@@ -90,6 +121,7 @@ function TutorProfile() {
             <InfoBlock icon={Clock} label="Available timings" value={tutor.timings} />
             <InfoBlock icon={MapPin} label="Mode" value={tutor.mode} />
           </div>
+
 
           <Section title="Reviews">
             <div className="mb-6 grid gap-4 rounded-2xl border border-border bg-card p-5 sm:grid-cols-[180px_1fr]">
