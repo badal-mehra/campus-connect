@@ -18,17 +18,53 @@ export interface Review {
   date: string;
 }
 
+export interface Booking {
+  id: string;
+  student: string;
+  subject: string;
+  package: string;
+  date: string;
+  time: string;
+  mode: "Online" | "Offline";
+  status: "Upcoming" | "Completed" | "Pending Confirmation" | "Cancelled";
+  amount: number;
+}
+
+export interface AvailabilitySlot {
+  day: "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
+  slots: string[];
+}
+
+export interface Verification {
+  emailVerified: boolean;
+  collegeIdVerified: boolean;
+  gradesVerified: boolean;
+  payoutSetup: boolean;
+  backgroundCheck: boolean;
+}
+
 export interface Tutor {
   id: string;
   name: string;
   avatar: string;
   year: "2nd Year" | "3rd Year" | "4th Year";
   branch: string;
+  college: string;
+  cgpa: number;
+  rollNo: string;
+  email: string;
+  phone: string;
+  city: string;
+  languages: string[];
+  achievements: string[];
+  experience: string;
+  responseTime: string;
   bio: string;
   subjects: string[];
   badge: Badge;
   rating: number;
   totalSessions: number;
+  totalEarnings: number;
   startingPrice: number;
   mode: "Online" | "Offline" | "Both";
   timings: string;
@@ -36,6 +72,9 @@ export interface Tutor {
   packages: Package[];
   reviews: Review[];
   ratingBreakdown: { 5: number; 4: number; 3: number; 2: number; 1: number };
+  availability: AvailabilitySlot[];
+  bookings: Booking[];
+  verification: Verification;
 }
 
 const initials = (name: string) =>
