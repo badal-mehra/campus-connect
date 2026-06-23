@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          achievements: string[]
+          avatar_url: string
+          bio: string
+          branch: string
+          cgpa: number | null
+          college: string
+          created_at: string
+          full_name: string
+          hourly_rate: number | null
+          id: string
+          linkedin: string
+          phone: string
+          role: string
+          roll_no: string
+          subjects: string[]
+          university: string
+          updated_at: string
+          year: string
+        }
+        Insert: {
+          achievements?: string[]
+          avatar_url?: string
+          bio?: string
+          branch?: string
+          cgpa?: number | null
+          college?: string
+          created_at?: string
+          full_name?: string
+          hourly_rate?: number | null
+          id: string
+          linkedin?: string
+          phone?: string
+          role?: string
+          roll_no?: string
+          subjects?: string[]
+          university?: string
+          updated_at?: string
+          year?: string
+        }
+        Update: {
+          achievements?: string[]
+          avatar_url?: string
+          bio?: string
+          branch?: string
+          cgpa?: number | null
+          college?: string
+          created_at?: string
+          full_name?: string
+          hourly_rate?: number | null
+          id?: string
+          linkedin?: string
+          phone?: string
+          role?: string
+          roll_no?: string
+          subjects?: string[]
+          university?: string
+          updated_at?: string
+          year?: string
+        }
+        Relationships: []
+      }
       tutor_packages: {
         Row: {
           created_at: string
