@@ -2,11 +2,11 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { getTutor, type Package } from "@/lib/tutors-data";
+import { getTutor, type Package, type Tutor } from "@/lib/tutors-data";
 import { ArrowLeft, CheckCircle2, Clock, MapPin, Star, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/tutors/$id")({
-  loader: ({ params }) => {
+  loader: ({ params }): { tutor: Tutor } => {
     const tutor = getTutor(params.id);
     if (!tutor) throw notFound();
     return { tutor };

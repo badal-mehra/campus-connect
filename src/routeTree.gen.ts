@@ -9,38 +9,97 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TutorsRouteImport } from './routes/tutors'
+import { Route as BecomeTutorRouteImport } from './routes/become-tutor'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TutorsIdRouteImport } from './routes/tutors.$id'
+import { Route as BookIdRouteImport } from './routes/book.$id'
 
+const TutorsRoute = TutorsRouteImport.update({
+  id: '/tutors',
+  path: '/tutors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BecomeTutorRoute = BecomeTutorRouteImport.update({
+  id: '/become-tutor',
+  path: '/become-tutor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TutorsIdRoute = TutorsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => TutorsRoute,
+} as any)
+const BookIdRoute = BookIdRouteImport.update({
+  id: '/book/$id',
+  path: '/book/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/become-tutor': typeof BecomeTutorRoute
+  '/tutors': typeof TutorsRouteWithChildren
+  '/book/$id': typeof BookIdRoute
+  '/tutors/$id': typeof TutorsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/become-tutor': typeof BecomeTutorRoute
+  '/tutors': typeof TutorsRouteWithChildren
+  '/book/$id': typeof BookIdRoute
+  '/tutors/$id': typeof TutorsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/become-tutor': typeof BecomeTutorRoute
+  '/tutors': typeof TutorsRouteWithChildren
+  '/book/$id': typeof BookIdRoute
+  '/tutors/$id': typeof TutorsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/become-tutor' | '/tutors' | '/book/$id' | '/tutors/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/become-tutor' | '/tutors' | '/book/$id' | '/tutors/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/become-tutor'
+    | '/tutors'
+    | '/book/$id'
+    | '/tutors/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BecomeTutorRoute: typeof BecomeTutorRoute
+  TutorsRoute: typeof TutorsRouteWithChildren
+  BookIdRoute: typeof BookIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tutors': {
+      id: '/tutors'
+      path: '/tutors'
+      fullPath: '/tutors'
+      preLoaderRoute: typeof TutorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/become-tutor': {
+      id: '/become-tutor'
+      path: '/become-tutor'
+      fullPath: '/become-tutor'
+      preLoaderRoute: typeof BecomeTutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +107,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tutors/$id': {
+      id: '/tutors/$id'
+      path: '/$id'
+      fullPath: '/tutors/$id'
+      preLoaderRoute: typeof TutorsIdRouteImport
+      parentRoute: typeof TutorsRoute
+    }
+    '/book/$id': {
+      id: '/book/$id'
+      path: '/book/$id'
+      fullPath: '/book/$id'
+      preLoaderRoute: typeof BookIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface TutorsRouteChildren {
+  TutorsIdRoute: typeof TutorsIdRoute
+}
+
+const TutorsRouteChildren: TutorsRouteChildren = {
+  TutorsIdRoute: TutorsIdRoute,
+}
+
+const TutorsRouteWithChildren =
+  TutorsRoute._addFileChildren(TutorsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BecomeTutorRoute: BecomeTutorRoute,
+  TutorsRoute: TutorsRouteWithChildren,
+  BookIdRoute: BookIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

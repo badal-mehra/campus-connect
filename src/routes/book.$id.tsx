@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { getTutor, type Package } from "@/lib/tutors-data";
+import { getTutor, type Package, type Tutor } from "@/lib/tutors-data";
 import { ArrowLeft, CalendarDays, CheckCircle2, Clock, Lock } from "lucide-react";
 import { toast } from "sonner";
 
@@ -14,7 +14,7 @@ const searchSchema = z.object({ pkg: z.string().optional() });
 
 export const Route = createFileRoute("/book/$id")({
   validateSearch: searchSchema,
-  loader: ({ params }) => {
+  loader: ({ params }): { tutor: Tutor } => {
     const tutor = getTutor(params.id);
     if (!tutor) throw notFound();
     return { tutor };
