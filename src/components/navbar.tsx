@@ -41,7 +41,7 @@ export function Navbar() {
         <nav className="hidden items-center gap-1 md:flex">
           <NavLink to="/tutors">Find Tutor</NavLink>
           <NavLink to="/become-tutor">Become a Tutor</NavLink>
-          {user && <NavLink to="/my-packages">My Packages</NavLink>}
+          {user && <NavLink to="/profile">Profile</NavLink>}
           {user && <NavLink to="/dashboard/$id" params={{ id: "aarav-sharma" }}>Dashboard</NavLink>}
         </nav>
 
@@ -71,7 +71,7 @@ export function Navbar() {
           <div className="flex flex-col gap-1 px-4 py-3">
             <Link to="/tutors" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary">Find Tutor</Link>
             <Link to="/become-tutor" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary">Become a Tutor</Link>
-            {user && <Link to="/my-packages" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary">My Packages</Link>}
+            {user && <Link to="/profile" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary">Profile</Link>}
             {user ? (
               <Button variant="ghost" size="sm" className="justify-start" onClick={() => { setOpen(false); handleSignOut(); }}>
                 <LogOut className="h-4 w-4" /> Sign out
