@@ -96,7 +96,14 @@ const reviews1: Review[] = [
   { id: "r3", student: "Priya S.", rating: 4, text: "Patient and knows the syllabus inside out. Highly recommend.", date: "1 month ago" },
 ];
 
-export const tutors: Tutor[] = [
+type BaseTutor = Omit<
+  Tutor,
+  | "college" | "cgpa" | "rollNo" | "email" | "phone" | "city" | "languages"
+  | "achievements" | "experience" | "responseTime" | "totalEarnings"
+  | "availability" | "bookings" | "verification"
+>;
+
+const baseTutors: BaseTutor[] = [
   {
     id: "aarav-sharma",
     name: "Aarav Sharma",
@@ -212,6 +219,90 @@ export const tutors: Tutor[] = [
     ratingBreakdown: { 5: 15, 4: 6, 3: 1, 2: 0, 1: 0 },
   },
 ];
+
+const extras: Record<string, Pick<Tutor,
+  "college" | "cgpa" | "rollNo" | "email" | "phone" | "city" | "languages"
+  | "achievements" | "experience" | "responseTime"
+>> = {
+  "aarav-sharma": {
+    college: "IIT Bombay", cgpa: 9.4, rollNo: "20CS10042", email: "aarav.sharma@iitb.ac.in",
+    phone: "+91 98765 43210", city: "Mumbai",
+    languages: ["English", "Hindi", "Marathi"],
+    achievements: ["SDE Intern @ Razorpay '24", "ACM-ICPC Regionalist", "GSoC '23 Contributor"],
+    experience: "2+ years tutoring juniors", responseTime: "Replies in ~30 min",
+  },
+  "diya-patel": {
+    college: "BITS Pilani", cgpa: 9.1, rollNo: "2021A3PS0123P", email: "diya.patel@pilani.bits-pilani.ac.in",
+    phone: "+91 98123 45678", city: "Pilani",
+    languages: ["English", "Hindi", "Gujarati"],
+    achievements: ["IEEE Best Paper '23", "Texas Instruments Innovation Challenge — Finalist"],
+    experience: "1.5 years tutoring", responseTime: "Replies in ~1 hr",
+  },
+  "rohan-iyer": {
+    college: "NIT Trichy", cgpa: 8.9, rollNo: "108120087", email: "rohan.iyer@nitt.edu",
+    phone: "+91 99887 12345", city: "Tiruchirappalli",
+    languages: ["English", "Tamil", "Hindi"],
+    achievements: ["Backend Intern @ Postman '24", "Smart India Hackathon Winner '23"],
+    experience: "2 years tutoring", responseTime: "Replies in ~2 hrs",
+  },
+  "meera-nair": {
+    college: "VIT Vellore", cgpa: 9.2, rollNo: "21BCE2034", email: "meera.nair@vitstudent.ac.in",
+    phone: "+91 98401 22334", city: "Vellore",
+    languages: ["English", "Malayalam", "Hindi"],
+    achievements: ["Dean's List 2022, 2023", "GATE Aspirant — Mock AIR 412"],
+    experience: "1 year tutoring", responseTime: "Replies in ~45 min",
+  },
+  "vikram-rao": {
+    college: "IIIT Hyderabad", cgpa: 9.5, rollNo: "2021101055", email: "vikram.rao@students.iiit.ac.in",
+    phone: "+91 90030 11122", city: "Hyderabad",
+    languages: ["English", "Hindi", "Kannada", "Telugu"],
+    achievements: ["SDE Intern @ Atlassian '24", "Codeforces Expert (1700+)", "Open-source maintainer (2.1k ★)"],
+    experience: "3 years tutoring 30+ juniors", responseTime: "Replies in ~20 min",
+  },
+  "sneha-kulkarni": {
+    college: "COEP Pune", cgpa: 9.0, rollNo: "112315067", email: "sneha.kulkarni@coep.ac.in",
+    phone: "+91 89999 76543", city: "Pune",
+    languages: ["English", "Marathi", "Hindi"],
+    achievements: ["1st-year branch topper", "Hackathon — Best UI award"],
+    experience: "6 months tutoring", responseTime: "Replies in ~15 min",
+  },
+};
+
+const defaultAvailability: AvailabilitySlot[] = [
+  { day: "Mon", slots: ["7:00 PM", "8:00 PM", "9:00 PM"] },
+  { day: "Tue", slots: ["7:00 PM", "8:00 PM"] },
+  { day: "Wed", slots: ["7:00 PM", "9:00 PM"] },
+  { day: "Thu", slots: ["8:00 PM", "9:00 PM"] },
+  { day: "Fri", slots: ["7:00 PM"] },
+  { day: "Sat", slots: ["11:00 AM", "2:00 PM", "5:00 PM"] },
+  { day: "Sun", slots: ["11:00 AM", "3:00 PM"] },
+];
+
+const defaultBookings = (tutorName: string): Booking[] => [
+  { id: "b1", student: "Ananya R.", subject: "DSA", package: "Quick Doubt Clearing", date: "Tomorrow", time: "8:00 PM", mode: "Online", status: "Upcoming", amount: 299 },
+  { id: "b2", student: "Karthik M.", subject: "DBMS", package: "Exam Rescue Sprint", date: "In 3 days", time: "7:00 PM", mode: "Online", status: "Upcoming", amount: 1645 },
+  { id: "b3", student: "Priya S.", subject: "OS", package: "Quick Doubt Clearing", date: "Next Sat", time: "11:00 AM", mode: "Offline", status: "Pending Confirmation", amount: 299 },
+  { id: "b4", student: "Rohit K.", subject: "DSA", package: "Monthly Mastery", date: "Last Sunday", time: "5:00 PM", mode: "Online", status: "Completed", amount: 2990 },
+  { id: "b5", student: "Neha G.", subject: "DBMS", package: "Quick Doubt Clearing", date: "2 days ago", time: "8:00 PM", mode: "Online", status: "Completed", amount: 299 },
+  { id: "b6", student: "Aman T.", subject: "DSA", package: "Quick Doubt Clearing", date: "Last week", time: "9:00 PM", mode: "Online", status: "Cancelled", amount: 0 },
+].map((b) => ({ ...b, student: b.student })) as Booking[];
+
+const defaultVerification = (badge: Badge): Verification => ({
+  emailVerified: true,
+  collegeIdVerified: true,
+  gradesVerified: true,
+  payoutSetup: badge !== "New Tutor",
+  backgroundCheck: badge === "Top Tutor" || badge === "Elite Tutor",
+});
+
+export const tutors: Tutor[] = baseTutors.map((b) => ({
+  ...b,
+  ...extras[b.id],
+  totalEarnings: b.totalSessions * Math.round(b.startingPrice * 1.6),
+  availability: defaultAvailability,
+  bookings: defaultBookings(b.name),
+  verification: defaultVerification(b.badge),
+}));
 
 export const allSubjects = Array.from(new Set(tutors.flatMap((t) => t.subjects))).sort();
 
