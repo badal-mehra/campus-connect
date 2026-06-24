@@ -159,21 +159,7 @@ function BasicInfo() {
     </div>
   );
 }
-// function BasicInfo() {
-//   return (
-//     <div className="space-y-5">
-//       <StepHeader title="Tell us about you" subtitle="The basics — we'll keep your contact info private." />
-//       <div className="grid gap-5 sm:grid-cols-2">
-//         <Field label="Full name"><Input placeholder="Aarav Sharma" required /></Field>
-//         <Field label="College / University"><Input placeholder="Lovely Professional University" required /></Field>
-//         <Field label="Year"><Input placeholder="3rd Year" required /></Field>
-//         <Field label="Branch"><Input placeholder="CSE" required /></Field>
-//         <Field label="Phone"><Input type="tel" placeholder="+91 91035 7988" required /></Field>
-//         <Field label="College Email"><Input type="email" placeholder="you@lpu.in" required /></Field>
-//       </div>
-//     </div>
-//   );
-// }
+
 
 function AcademicInfo() {
   return (
