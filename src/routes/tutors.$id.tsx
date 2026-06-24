@@ -99,28 +99,51 @@ function TutorProfile() {
             </ul>
           </Section>
 
-          <Section title="Grade-verified subjects">
-            <div className="flex flex-wrap gap-2">
+          <Section title="Subjects & offerings">
+            <p className="mb-4 text-sm text-muted-foreground">Each subject below shows the tutor's verified grade, what is covered, and a direct booking link.</p>
+            <div className="grid gap-4 sm:grid-cols-2">
               {tutor.gradeProof.map((g) => (
-                <span key={g.subject} className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                  <CheckCircle2 className="h-4 w-4" /> {g.subject} — {g.grade} Grade Verified
-                </span>
+                <div key={g.subject} className="flex flex-col rounded-2xl border border-border bg-card p-5 shadow-soft transition-shadow hover:shadow-card-hover">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="text-base font-bold tracking-tight">{g.subject}</h3>
+                      <p className="mt-1 text-xs text-muted-foreground">{g.description}</p>
+                    </div>
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                      <CheckCircle2 className="h-3.5 w-3.5" /> {g.grade}
+                    </span>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {g.topics.slice(0, 4).map((topic) => (
+                      <span key={topic} className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-brand">{topic}</span>
+                    ))}
+                    {g.topics.length > 4 && (
+                      <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-brand">+{g.topics.length - 4} more</span>
+                    )}
+                  </div>
+                  <div className="mt-5 flex items-center gap-2">
+                    <Button asChild size="sm" variant="brand" className="flex-1">
+                      <Link to="/tutors/$id/offering/$subject" params={{ id: tutor.id, subject: g.subject }}>
+                        <BookOpen className="mr-1.5 h-4 w-4" /> Book Now
+                      </Link>
+                    </Button>
+                    <Button asChild size="sm" variant="brandOutline" className="flex-1">
+                      <Link to="/tutors/$id/offering/$subject" params={{ id: tutor.id, subject: g.subject }}>
+                        View Details <ChevronRight className="ml-1 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               ))}
             </div>
           </Section>
 
-          <Section title="Subjects taught">
-            <p className="mb-3 text-xs text-muted-foreground">Tap any subject to see what's covered, the tutor's grade in it, and book a session.</p>
+          <Section title="Other credentials">
             <div className="flex flex-wrap gap-2">
-              {tutor.subjects.map((s) => (
-                <Link
-                  key={s}
-                  to="/tutors/$id/offering/$subject"
-                  params={{ id: tutor.id, subject: s }}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-sm font-medium text-brand transition-colors hover:bg-cyan-glow hover:text-white"
-                >
-                  {s} <ArrowLeft className="h-3 w-3 rotate-180" />
-                </Link>
+              {tutor.subjects.filter((s) => !tutor.gradeProof.some((g) => g.subject.toLowerCase() === s.toLowerCase())).map((s) => (
+                <span key={s} className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-sm font-medium text-brand">
+                  {s}
+                </span>
               ))}
             </div>
           </Section>
