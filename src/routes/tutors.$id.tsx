@@ -110,9 +110,17 @@ function TutorProfile() {
           </Section>
 
           <Section title="Subjects taught">
+            <p className="mb-3 text-xs text-muted-foreground">Tap any subject to see what's covered, the tutor's grade in it, and book a session.</p>
             <div className="flex flex-wrap gap-2">
               {tutor.subjects.map((s) => (
-                <span key={s} className="rounded-full bg-accent px-3 py-1 text-sm font-medium text-brand">{s}</span>
+                <Link
+                  key={s}
+                  to="/tutors/$id/offering/$subject"
+                  params={{ id: tutor.id, subject: s }}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-sm font-medium text-brand transition-colors hover:bg-cyan-glow hover:text-white"
+                >
+                  {s} <ArrowLeft className="h-3 w-3 rotate-180" />
+                </Link>
               ))}
             </div>
           </Section>

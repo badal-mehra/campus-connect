@@ -237,12 +237,12 @@ function badgeStyles(badge: Tutor["badge"]) {
 
 export function TutorCard({ tutor }: { tutor: Tutor }) {
   return (
-    <Link
-      to="/tutors/$id"
-      params={{ id: tutor.id }}
-      className="group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-soft shadow-card-hover"
-    >
-      <div className="flex items-start gap-4">
+    <div className="group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-soft shadow-card-hover">
+      <Link
+        to="/tutors/$id"
+        params={{ id: tutor.id }}
+        className="flex items-start gap-4"
+      >
         <img src={tutor.avatar} alt={tutor.name} className="h-14 w-14 shrink-0 rounded-xl" />
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
@@ -255,27 +255,36 @@ export function TutorCard({ tutor }: { tutor: Tutor }) {
             </span>
           </div>
         </div>
-      </div>
+      </Link>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
         {tutor.subjects.slice(0, 3).map((s) => (
-          <span key={s} className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-brand">{s}</span>
+          <Link
+            key={s}
+            to="/tutors/$id/offering/$subject"
+            params={{ id: tutor.id, subject: s }}
+            className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-brand transition-colors hover:bg-cyan-glow hover:text-white"
+          >
+            {s}
+          </Link>
         ))}
       </div>
 
-      <div className="mt-4 flex items-center gap-1 text-sm">
+      <Link to="/tutors/$id" params={{ id: tutor.id }} className="mt-4 flex items-center gap-1 text-sm">
         <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
         <span className="font-semibold">{tutor.rating}</span>
         <span className="text-muted-foreground">• {tutor.totalSessions} sessions</span>
-      </div>
+      </Link>
 
       <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
         <div>
           <p className="text-xs text-muted-foreground">Starting from</p>
           <p className="text-lg font-black tracking-tight text-brand">₹{tutor.startingPrice}</p>
         </div>
-        <Button size="sm" variant="brand">View Profile</Button>
+        <Button asChild size="sm" variant="brand">
+          <Link to="/tutors/$id" params={{ id: tutor.id }}>View Profile</Link>
+        </Button>
       </div>
-    </Link>
+    </div>
   );
 }
