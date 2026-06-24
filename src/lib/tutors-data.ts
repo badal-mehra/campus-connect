@@ -179,7 +179,11 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 279,
     mode: "Both",
     timings: "Weekends only, 10 AM – 8 PM",
-    gradeProof: [{ subject: "DBMS", grade: "O" }, { subject: "OS", grade: "A+" }],
+    gradeProof: [
+      { subject: "DBMS", grade: "O", topics: ["Relational Algebra", "SQL Mastery", "Normalization", "Transactions", "Database Design"], description: "Learn to model, query and optimize databases like a backend engineer." },
+      { subject: "Operating Systems", grade: "A+", topics: ["Process Management", "Memory Management", "Synchronization", "Deadlocks", "File Systems"], description: "Demystify OS internals with diagrams, code snippets and interview questions." },
+      { subject: "Computer Networks", grade: "A", topics: ["OSI/TCP-IP", "Routing", "Transport Layer", "DNS/DHCP", "Network Security"], description: "From packets to protocols — build networking intuition for exams and interviews." },
+    ],
     packages: mkPkgs(279),
     reviews: reviews1,
     ratingBreakdown: { 5: 64, 4: 17, 3: 3, 2: 0, 1: 0 },
