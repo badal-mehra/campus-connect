@@ -259,7 +259,15 @@ export function TutorCard({ tutor }: { tutor: Tutor }) {
 
       <div className="mt-4 flex flex-wrap gap-1.5">
         {tutor.subjects.slice(0, 3).map((s) => (
-          <span key={s} className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-brand">{s}</span>
+          <Link
+            key={s}
+            to="/tutors/$id/offering/$subject"
+            params={{ id: tutor.id, subject: s }}
+            onClick={(e) => e.stopPropagation()}
+            className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-brand transition-colors hover:bg-cyan-glow hover:text-white"
+          >
+            {s}
+          </Link>
         ))}
       </div>
 
