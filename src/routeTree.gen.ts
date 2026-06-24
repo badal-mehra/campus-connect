@@ -19,6 +19,7 @@ import { Route as TutorsIdRouteImport } from './routes/tutors.$id'
 import { Route as DashboardIdRouteImport } from './routes/dashboard.$id'
 import { Route as BookIdRouteImport } from './routes/book.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as TutorsIdIndexRouteImport } from './routes/tutors.$id.index'
 import { Route as TutorsIdOfferingSubjectRouteImport } from './routes/tutors.$id.offering.$subject'
 
 const TutorsRoute = TutorsRouteImport.update({
@@ -70,6 +71,11 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const TutorsIdIndexRoute = TutorsIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TutorsIdRoute,
+} as any)
 const TutorsIdOfferingSubjectRoute = TutorsIdOfferingSubjectRouteImport.update({
   id: '/offering/$subject',
   path: '/offering/$subject',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRouteWithChildren
   '/tutors/': typeof TutorsIndexRoute
+  '/tutors/$id/': typeof TutorsIdIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRoutesByTo {
@@ -95,8 +102,8 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
-  '/tutors/$id': typeof TutorsIdRouteWithChildren
   '/tutors': typeof TutorsIndexRoute
+  '/tutors/$id': typeof TutorsIdIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRoutesById {
@@ -111,6 +118,7 @@ export interface FileRoutesById {
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRouteWithChildren
   '/tutors/': typeof TutorsIndexRoute
+  '/tutors/$id/': typeof TutorsIdIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRouteTypes {
@@ -125,6 +133,7 @@ export interface FileRouteTypes {
     | '/dashboard/$id'
     | '/tutors/$id'
     | '/tutors/'
+    | '/tutors/$id/'
     | '/tutors/$id/offering/$subject'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -134,8 +143,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/book/$id'
     | '/dashboard/$id'
-    | '/tutors/$id'
     | '/tutors'
+    | '/tutors/$id'
     | '/tutors/$id/offering/$subject'
   id:
     | '__root__'
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/dashboard/$id'
     | '/tutors/$id'
     | '/tutors/'
+    | '/tutors/$id/'
     | '/tutors/$id/offering/$subject'
   fileRoutesById: FileRoutesById
 }
@@ -234,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/tutors/$id/': {
+      id: '/tutors/$id/'
+      path: '/'
+      fullPath: '/tutors/$id/'
+      preLoaderRoute: typeof TutorsIdIndexRouteImport
+      parentRoute: typeof TutorsIdRoute
+    }
     '/tutors/$id/offering/$subject': {
       id: '/tutors/$id/offering/$subject'
       path: '/offering/$subject'
@@ -256,10 +273,12 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface TutorsIdRouteChildren {
+  TutorsIdIndexRoute: typeof TutorsIdIndexRoute
   TutorsIdOfferingSubjectRoute: typeof TutorsIdOfferingSubjectRoute
 }
 
 const TutorsIdRouteChildren: TutorsIdRouteChildren = {
+  TutorsIdIndexRoute: TutorsIdIndexRoute,
   TutorsIdOfferingSubjectRoute: TutorsIdOfferingSubjectRoute,
 }
 
@@ -292,3 +311,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
