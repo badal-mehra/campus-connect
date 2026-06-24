@@ -14,6 +14,7 @@ import { Route as BecomeTutorRouteImport } from './routes/become-tutor'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TutorsIndexRouteImport } from './routes/tutors.index'
 import { Route as TutorsIdRouteImport } from './routes/tutors.$id'
 import { Route as DashboardIdRouteImport } from './routes/dashboard.$id'
 import { Route as BookIdRouteImport } from './routes/book.$id'
@@ -43,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TutorsIndexRoute = TutorsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TutorsRoute,
 } as any)
 const TutorsIdRoute = TutorsIdRouteImport.update({
   id: '/$id',
@@ -79,17 +85,18 @@ export interface FileRoutesByFullPath {
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRouteWithChildren
+  '/tutors/': typeof TutorsIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/become-tutor': typeof BecomeTutorRoute
-  '/tutors': typeof TutorsRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRouteWithChildren
+  '/tutors': typeof TutorsIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRoutesById {
@@ -103,6 +110,7 @@ export interface FileRoutesById {
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRouteWithChildren
+  '/tutors/': typeof TutorsIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRouteTypes {
@@ -116,17 +124,18 @@ export interface FileRouteTypes {
     | '/book/$id'
     | '/dashboard/$id'
     | '/tutors/$id'
+    | '/tutors/'
     | '/tutors/$id/offering/$subject'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/become-tutor'
-    | '/tutors'
     | '/profile'
     | '/book/$id'
     | '/dashboard/$id'
     | '/tutors/$id'
+    | '/tutors'
     | '/tutors/$id/offering/$subject'
   id:
     | '__root__'
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/book/$id'
     | '/dashboard/$id'
     | '/tutors/$id'
+    | '/tutors/'
     | '/tutors/$id/offering/$subject'
   fileRoutesById: FileRoutesById
 }
@@ -188,6 +198,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/tutors/': {
+      id: '/tutors/'
+      path: '/'
+      fullPath: '/tutors/'
+      preLoaderRoute: typeof TutorsIndexRouteImport
+      parentRoute: typeof TutorsRoute
     }
     '/tutors/$id': {
       id: '/tutors/$id'
@@ -252,10 +269,12 @@ const TutorsIdRouteWithChildren = TutorsIdRoute._addFileChildren(
 
 interface TutorsRouteChildren {
   TutorsIdRoute: typeof TutorsIdRouteWithChildren
+  TutorsIndexRoute: typeof TutorsIndexRoute
 }
 
 const TutorsRouteChildren: TutorsRouteChildren = {
   TutorsIdRoute: TutorsIdRouteWithChildren,
+  TutorsIndexRoute: TutorsIndexRoute,
 }
 
 const TutorsRouteWithChildren =
