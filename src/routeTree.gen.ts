@@ -14,10 +14,12 @@ import { Route as BecomeTutorRouteImport } from './routes/become-tutor'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TutorsIndexRouteImport } from './routes/tutors.index'
 import { Route as TutorsIdRouteImport } from './routes/tutors.$id'
 import { Route as DashboardIdRouteImport } from './routes/dashboard.$id'
 import { Route as BookIdRouteImport } from './routes/book.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as TutorsIdIndexRouteImport } from './routes/tutors.$id.index'
 import { Route as TutorsIdOfferingSubjectRouteImport } from './routes/tutors.$id.offering.$subject'
 
 const TutorsRoute = TutorsRouteImport.update({
@@ -44,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TutorsIndexRoute = TutorsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TutorsRoute,
+} as any)
 const TutorsIdRoute = TutorsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -64,6 +71,11 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const TutorsIdIndexRoute = TutorsIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TutorsIdRoute,
+} as any)
 const TutorsIdOfferingSubjectRoute = TutorsIdOfferingSubjectRouteImport.update({
   id: '/offering/$subject',
   path: '/offering/$subject',
@@ -79,17 +91,19 @@ export interface FileRoutesByFullPath {
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRouteWithChildren
+  '/tutors/': typeof TutorsIndexRoute
+  '/tutors/$id/': typeof TutorsIdIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/become-tutor': typeof BecomeTutorRoute
-  '/tutors': typeof TutorsRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
-  '/tutors/$id': typeof TutorsIdRouteWithChildren
+  '/tutors': typeof TutorsIndexRoute
+  '/tutors/$id': typeof TutorsIdIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRoutesById {
@@ -103,6 +117,8 @@ export interface FileRoutesById {
   '/book/$id': typeof BookIdRoute
   '/dashboard/$id': typeof DashboardIdRoute
   '/tutors/$id': typeof TutorsIdRouteWithChildren
+  '/tutors/': typeof TutorsIndexRoute
+  '/tutors/$id/': typeof TutorsIdIndexRoute
   '/tutors/$id/offering/$subject': typeof TutorsIdOfferingSubjectRoute
 }
 export interface FileRouteTypes {
@@ -116,16 +132,18 @@ export interface FileRouteTypes {
     | '/book/$id'
     | '/dashboard/$id'
     | '/tutors/$id'
+    | '/tutors/'
+    | '/tutors/$id/'
     | '/tutors/$id/offering/$subject'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/become-tutor'
-    | '/tutors'
     | '/profile'
     | '/book/$id'
     | '/dashboard/$id'
+    | '/tutors'
     | '/tutors/$id'
     | '/tutors/$id/offering/$subject'
   id:
@@ -139,6 +157,8 @@ export interface FileRouteTypes {
     | '/book/$id'
     | '/dashboard/$id'
     | '/tutors/$id'
+    | '/tutors/'
+    | '/tutors/$id/'
     | '/tutors/$id/offering/$subject'
   fileRoutesById: FileRoutesById
 }
@@ -189,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tutors/': {
+      id: '/tutors/'
+      path: '/'
+      fullPath: '/tutors/'
+      preLoaderRoute: typeof TutorsIndexRouteImport
+      parentRoute: typeof TutorsRoute
+    }
     '/tutors/$id': {
       id: '/tutors/$id'
       path: '/$id'
@@ -217,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/tutors/$id/': {
+      id: '/tutors/$id/'
+      path: '/'
+      fullPath: '/tutors/$id/'
+      preLoaderRoute: typeof TutorsIdIndexRouteImport
+      parentRoute: typeof TutorsIdRoute
+    }
     '/tutors/$id/offering/$subject': {
       id: '/tutors/$id/offering/$subject'
       path: '/offering/$subject'
@@ -239,10 +273,12 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface TutorsIdRouteChildren {
+  TutorsIdIndexRoute: typeof TutorsIdIndexRoute
   TutorsIdOfferingSubjectRoute: typeof TutorsIdOfferingSubjectRoute
 }
 
 const TutorsIdRouteChildren: TutorsIdRouteChildren = {
+  TutorsIdIndexRoute: TutorsIdIndexRoute,
   TutorsIdOfferingSubjectRoute: TutorsIdOfferingSubjectRoute,
 }
 
@@ -252,10 +288,12 @@ const TutorsIdRouteWithChildren = TutorsIdRoute._addFileChildren(
 
 interface TutorsRouteChildren {
   TutorsIdRoute: typeof TutorsIdRouteWithChildren
+  TutorsIndexRoute: typeof TutorsIndexRoute
 }
 
 const TutorsRouteChildren: TutorsRouteChildren = {
   TutorsIdRoute: TutorsIdRouteWithChildren,
+  TutorsIndexRoute: TutorsIndexRoute,
 }
 
 const TutorsRouteWithChildren =

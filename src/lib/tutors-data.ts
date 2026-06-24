@@ -68,7 +68,7 @@ export interface Tutor {
   startingPrice: number;
   mode: "Online" | "Offline" | "Both";
   timings: string;
-  gradeProof: { subject: string; grade: string }[];
+  gradeProof: { subject: string; grade: string; topics: string[]; description: string }[];
   packages: Package[];
   reviews: Review[];
   ratingBreakdown: { 5: number; 4: number; 3: number; 2: number; 1: number };
@@ -118,7 +118,26 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 299,
     mode: "Both",
     timings: "Weekdays 7–10 PM, Weekends 11 AM – 6 PM",
-    gradeProof: [{ subject: "DSA", grade: "O" }, { subject: "DBMS", grade: "A+" }],
+    gradeProof: [
+      {
+        subject: "DSA",
+        grade: "O",
+        topics: ["Arrays & Strings", "Recursion & Backtracking", "Trees & Graphs", "Dynamic Programming", "Interview Patterns"],
+        description: "Crack coding rounds with first-principles problem solving. From LeetCode Easy to Hard, taught the way top product companies expect.",
+      },
+      {
+        subject: "DBMS",
+        grade: "A+",
+        topics: ["ER Modeling", "SQL & Queries", "Normalization", "Transactions & ACID", "Indexing & Query Optimization"],
+        description: "Master relational databases with real-world schemas, write complex SQL, and understand what happens under the hood.",
+      },
+      {
+        subject: "Operating Systems",
+        grade: "A",
+        topics: ["Processes & Threads", "CPU Scheduling", "Memory Management", "File Systems", "Concurrency"],
+        description: "Build a solid OS foundation with visuals and hands-on examples — perfect for interviews and semester exams.",
+      },
+    ],
     packages: mkPkgs(299),
     reviews: reviews1,
     ratingBreakdown: { 5: 120, 4: 18, 3: 3, 2: 1, 1: 0 },
@@ -137,7 +156,11 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 249,
     mode: "Online",
     timings: "Daily 6–9 PM",
-    gradeProof: [{ subject: "Signals", grade: "O" }, { subject: "Maths", grade: "O" }],
+    gradeProof: [
+      { subject: "Signals & Systems", grade: "O", topics: ["Fourier Series & Transform", "Laplace Transform", "Z-Transform", "Sampling & DT Signals", "LTI Systems"], description: "Make signals intuitive with visual explanations, solved problems and exam-focused shortcuts." },
+      { subject: "Digital Electronics", grade: "A+", topics: ["Boolean Algebra", "Combinational Circuits", "Sequential Circuits", "Flip-Flops", "FSM Design"], description: "From logic gates to finite state machines — build digital design confidence step by step." },
+      { subject: "Mathematics", grade: "O", topics: ["Linear Algebra", "Calculus", "Differential Equations", "Probability", "Transform Techniques"], description: "Engineering maths made concrete with applications in circuits, signals and computing." },
+    ],
     packages: mkPkgs(249),
     reviews: reviews1,
     ratingBreakdown: { 5: 78, 4: 15, 3: 3, 2: 0, 1: 0 },
@@ -156,7 +179,11 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 279,
     mode: "Both",
     timings: "Weekends only, 10 AM – 8 PM",
-    gradeProof: [{ subject: "DBMS", grade: "O" }, { subject: "OS", grade: "A+" }],
+    gradeProof: [
+      { subject: "DBMS", grade: "O", topics: ["Relational Algebra", "SQL Mastery", "Normalization", "Transactions", "Database Design"], description: "Learn to model, query and optimize databases like a backend engineer." },
+      { subject: "Operating Systems", grade: "A+", topics: ["Process Management", "Memory Management", "Synchronization", "Deadlocks", "File Systems"], description: "Demystify OS internals with diagrams, code snippets and interview questions." },
+      { subject: "Computer Networks", grade: "A", topics: ["OSI/TCP-IP", "Routing", "Transport Layer", "DNS/DHCP", "Network Security"], description: "From packets to protocols — build networking intuition for exams and interviews." },
+    ],
     packages: mkPkgs(279),
     reviews: reviews1,
     ratingBreakdown: { 5: 64, 4: 17, 3: 3, 2: 0, 1: 0 },
@@ -175,7 +202,11 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 199,
     mode: "Online",
     timings: "Weekdays 8–10 PM",
-    gradeProof: [{ subject: "Physics", grade: "O" }, { subject: "Maths-II", grade: "O" }],
+    gradeProof: [
+      { subject: "Physics", grade: "O", topics: ["Mechanics", "Electromagnetism", "Waves & Optics", "Quantum Basics", "Problem Solving"], description: "Physics for engineers, taught with intuition and rigorous problem solving." },
+      { subject: "Engineering Mathematics", grade: "O", topics: ["Calculus", "Linear Algebra", "Complex Analysis", "Probability", "Numerical Methods"], description: "Maths that actually matters for your core subjects and competitive exams." },
+      { subject: "Discrete Maths", grade: "A+", topics: ["Sets & Relations", "Graph Theory", "Combinatorics", "Boolean Algebra", "Number Theory"], description: "The math behind computer science — algorithms, cryptography and logic." },
+    ],
     packages: mkPkgs(199),
     reviews: reviews1,
     ratingBreakdown: { 5: 30, 4: 9, 3: 2, 2: 0, 1: 0 },
@@ -194,7 +225,11 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 349,
     mode: "Both",
     timings: "Weekdays 7–11 PM",
-    gradeProof: [{ subject: "DSA", grade: "O" }, { subject: "Web Tech", grade: "O" }],
+    gradeProof: [
+      { subject: "DSA", grade: "O", topics: ["Arrays & Hashing", "Two Pointers", "Trees & Graphs", "Dynamic Programming", "System Design Prep"], description: "Data structures and algorithms with interview-level depth and pattern recognition." },
+      { subject: "Web Development", grade: "O", topics: ["HTML/CSS/JS", "React", "Node.js", "Databases", "Deployment"], description: "Build real projects and learn the modern web stack from scratch." },
+      { subject: "System Design Basics", grade: "A+", topics: ["Scalability", "Load Balancing", "Databases", "Caching", "Microservices Intro"], description: "Foundation-level system design for product interviews and scalable thinking." },
+    ],
     packages: mkPkgs(349),
     reviews: reviews1,
     ratingBreakdown: { 5: 135, 4: 20, 3: 3, 2: 0, 1: 0 },
@@ -213,7 +248,11 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 149,
     mode: "Online",
     timings: "Daily 5–8 PM",
-    gradeProof: [{ subject: "C Prog", grade: "O" }, { subject: "Maths-I", grade: "O" }],
+    gradeProof: [
+      { subject: "C Programming", grade: "O", topics: ["Pointers", "Arrays", "Functions", "Structures", "File Handling"], description: "Learn C from the ground up — strong foundation for every language after it." },
+      { subject: "Mathematics", grade: "O", topics: ["Calculus", "Algebra", "Trigonometry", "Coordinate Geometry", "Differential Calculus"], description: "First-year engineering maths with simple explanations and lots of practice." },
+      { subject: "Basic Electronics", grade: "A+", topics: ["Diodes & Transistors", "Circuit Analysis", "Digital Logic", "OP-AMPs", "Signal Basics"], description: "Electronics made visual and easy for first-year students." },
+    ],
     packages: mkPkgs(149),
     reviews: reviews1,
     ratingBreakdown: { 5: 15, 4: 6, 3: 1, 2: 0, 1: 0 },

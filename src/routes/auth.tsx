@@ -25,7 +25,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/my-packages" });
+      if (data.user) navigate({ to: "/profile" });
     });
   }, [navigate]);
 
@@ -36,7 +36,7 @@ function AuthPage() {
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Welcome back!");
-    navigate({ to: "/my-packages" });
+    navigate({ to: "/profile" });
   }
 
   async function handleSignUp(e: React.FormEvent) {
@@ -46,7 +46,7 @@ function AuthPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/my-packages`,
+        emailRedirectTo: `${window.location.origin}/profile`,
         data: { full_name: name },
       },
     });
@@ -58,14 +58,14 @@ function AuthPage() {
   async function handleGoogle() {
     setLoading(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/my-packages",
+      redirect_uri: window.location.origin + "/profile",
     });
     if (result.error) {
       setLoading(false);
       return toast.error(result.error.message || "Google sign-in failed");
     }
     if (result.redirected) return;
-    navigate({ to: "/my-packages" });
+    navigate({ to: "/profile" });
   }
 
   return (
