@@ -118,7 +118,26 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 299,
     mode: "Both",
     timings: "Weekdays 7–10 PM, Weekends 11 AM – 6 PM",
-    gradeProof: [{ subject: "DSA", grade: "O" }, { subject: "DBMS", grade: "A+" }],
+    gradeProof: [
+      {
+        subject: "DSA",
+        grade: "O",
+        topics: ["Arrays & Strings", "Recursion & Backtracking", "Trees & Graphs", "Dynamic Programming", "Interview Patterns"],
+        description: "Crack coding rounds with first-principles problem solving. From LeetCode Easy to Hard, taught the way top product companies expect.",
+      },
+      {
+        subject: "DBMS",
+        grade: "A+",
+        topics: ["ER Modeling", "SQL & Queries", "Normalization", "Transactions & ACID", "Indexing & Query Optimization"],
+        description: "Master relational databases with real-world schemas, write complex SQL, and understand what happens under the hood.",
+      },
+      {
+        subject: "Operating Systems",
+        grade: "A",
+        topics: ["Processes & Threads", "CPU Scheduling", "Memory Management", "File Systems", "Concurrency"],
+        description: "Build a solid OS foundation with visuals and hands-on examples — perfect for interviews and semester exams.",
+      },
+    ],
     packages: mkPkgs(299),
     reviews: reviews1,
     ratingBreakdown: { 5: 120, 4: 18, 3: 3, 2: 1, 1: 0 },
