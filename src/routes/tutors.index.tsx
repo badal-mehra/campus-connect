@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -7,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Search, Star, SlidersHorizontal, X } from "lucide-react";
-import { tutors, allSubjects, type Tutor } from "@/lib/tutors-data";
+import { Search, Star, SlidersHorizontal, X, Loader as Loader2 } from "lucide-react";
+import { getAllTutors, getAllSubjects, type TutorListItem } from "@/lib/tutors.functions";
 
 export const Route = createFileRoute("/tutors/")({
   head: () => ({
@@ -22,40 +23,73 @@ export const Route = createFileRoute("/tutors/")({
   component: TutorsPage,
 });
 
-const PACKAGE_TYPES = ["Quick Session", "Exam Rescue", "Monthly Plan", "Full Semester"] as const;
-const YEARS = ["2nd Year", "3rd Year", "4th Year"] as const;
+const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"] as const;
 const MODES = ["Online", "Offline", "Both"] as const;
 
 function TutorsPage() {
   const [query, setQuery] = useState("");
   const [subjects, setSubjects] = useState<string[]>([]);
-  const [pkgTypes, setPkgTypes] = useState<string[]>([]);
   const [budget, setBudget] = useState<number[]>([5000]);
   const [modes, setModes] = useState<string[]>([]);
   const [highRated, setHighRated] = useState(false);
   const [years, setYears] = useState<string[]>([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
+  const [tutors, setTutors] = useState<TutorListItem[]>([]);
+  const [allSubjects, setAllSubjects] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchTutors = useServerFn(getAllTutors);
+  const fetchSubjects = useServerFn(getAllSubjects);
+
+  useEffect(() => {
+    Promise.all([fetchTutors(), fetchSubjects()])
+      .then(([tutorsData, subjectsData]) => {
+        setTutors(Object.values(tutorsData) as TutorListItem[]);
+        setAllSubjects(Object.values(subjectsData) as string[]);
+      })
+      .catch((e) => console.error("Failed to load data:", e))
+      .finally(() => setLoading(false));
+  }, [fetchTutors, fetchSubjects]);
+
   const filtered = useMemo(() => {
     return tutors.filter((t) => {
-      if (query && !t.subjects.some((s) => s.toLowerCase().includes(query.toLowerCase())) && !t.name.toLowerCase().includes(query.toLowerCase())) return false;
-      if (subjects.length && !subjects.some((s) => t.subjects.includes(s))) return false;
-      if (pkgTypes.length && !t.packages.some((p) => pkgTypes.includes(p.type))) return false;
-      if (t.startingPrice > budget[0]) return false;
-      if (modes.length && !modes.includes(t.mode)) return false;
+      if (query) {
+        const q = query.toLowerCase();
+        const matchesName = t.full_name?.toLowerCase().includes(q);
+        const matchesSubject = t.subjects?.some((s) => s.toLowerCase().includes(q));
+        const matchesCollege = t.college?.toLowerCase().includes(q);
+        if (!matchesName && !matchesSubject && !matchesCollege) return false;
+      }
+      if (subjects.length && !subjects.some((s) => t.subjects?.includes(s))) return false;
+      if (t.starting_price > budget[0]) return false;
+      if (modes.length && !modes.includes(t.mode) && t.mode !== "Both") return false;
       if (highRated && t.rating < 4.0) return false;
       if (years.length && !years.includes(t.year)) return false;
       return true;
     });
-  }, [query, subjects, pkgTypes, budget, modes, highRated, years]);
+  }, [tutors, query, subjects, budget, modes, highRated, years]);
 
   const clearAll = () => {
-    setSubjects([]); setPkgTypes([]); setBudget([5000]); setModes([]); setHighRated(false); setYears([]); setQuery("");
+    setSubjects([]); setBudget([5000]); setModes([]); setHighRated(false); setYears([]); setQuery("");
   };
 
   const toggle = (arr: string[], setArr: (v: string[]) => void, val: string) => {
     setArr(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="mx-auto max-w-7xl px-4 py-24 text-center">
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-brand" />
+          <p className="mt-4 text-muted-foreground">Loading tutors...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,7 +120,7 @@ function TutorsPage() {
         <aside className="hidden lg:block">
           <FiltersPanel
             subjects={subjects} setSubjects={setSubjects}
-            pkgTypes={pkgTypes} setPkgTypes={setPkgTypes}
+            allSubjects={allSubjects}
             budget={budget} setBudget={setBudget}
             modes={modes} setModes={setModes}
             highRated={highRated} setHighRated={setHighRated}
@@ -105,7 +139,7 @@ function TutorsPage() {
               </div>
               <FiltersPanel
                 subjects={subjects} setSubjects={setSubjects}
-                pkgTypes={pkgTypes} setPkgTypes={setPkgTypes}
+                allSubjects={allSubjects}
                 budget={budget} setBudget={setBudget}
                 modes={modes} setModes={setModes}
                 highRated={highRated} setHighRated={setHighRated}
@@ -140,7 +174,7 @@ function TutorsPage() {
 
 function FiltersPanel(props: {
   subjects: string[]; setSubjects: (v: string[]) => void;
-  pkgTypes: string[]; setPkgTypes: (v: string[]) => void;
+  allSubjects: string[];
   budget: number[]; setBudget: (v: number[]) => void;
   modes: string[]; setModes: (v: string[]) => void;
   highRated: boolean; setHighRated: (v: boolean) => void;
@@ -148,7 +182,7 @@ function FiltersPanel(props: {
   toggle: (arr: string[], setArr: (v: string[]) => void, val: string) => void;
   clearAll: () => void;
 }) {
-  const { subjects, setSubjects, pkgTypes, setPkgTypes, budget, setBudget, modes, setModes, highRated, setHighRated, years, setYears, toggle, clearAll } = props;
+  const { subjects, setSubjects, allSubjects, budget, setBudget, modes, setModes, highRated, setHighRated, years, setYears, toggle, clearAll } = props;
   return (
     <div className="space-y-7 rounded-2xl border border-border bg-card p-5">
       <div className="flex items-center justify-between">
@@ -156,27 +190,18 @@ function FiltersPanel(props: {
         <button onClick={clearAll} className="text-xs font-medium text-cyan-glow hover:underline">Clear all</button>
       </div>
 
-      <FilterGroup title="Subject">
-        <div className="space-y-2">
-          {allSubjects.map((s) => (
-            <label key={s} className="flex cursor-pointer items-center gap-2 text-sm">
-              <Checkbox checked={subjects.includes(s)} onCheckedChange={() => toggle(subjects, setSubjects, s)} />
-              <span>{s}</span>
-            </label>
-          ))}
-        </div>
-      </FilterGroup>
-
-      <FilterGroup title="Package Type">
-        <div className="space-y-2">
-          {PACKAGE_TYPES.map((p) => (
-            <label key={p} className="flex cursor-pointer items-center gap-2 text-sm">
-              <Checkbox checked={pkgTypes.includes(p)} onCheckedChange={() => toggle(pkgTypes, setPkgTypes, p)} />
-              <span>{p}</span>
-            </label>
-          ))}
-        </div>
-      </FilterGroup>
+      {allSubjects.length > 0 && (
+        <FilterGroup title="Subject">
+          <div className="max-h-48 space-y-2 overflow-y-auto">
+            {allSubjects.map((s) => (
+              <label key={s} className="flex cursor-pointer items-center gap-2 text-sm">
+                <Checkbox checked={subjects.includes(s)} onCheckedChange={() => toggle(subjects, setSubjects, s)} />
+                <span>{s}</span>
+              </label>
+            ))}
+          </div>
+        </FilterGroup>
+      )}
 
       <FilterGroup title={`Budget — up to ₹${budget[0]}`}>
         <Slider value={budget} onValueChange={setBudget} min={0} max={5000} step={50} />
@@ -226,7 +251,7 @@ function FilterGroup({ title, children }: { title: string; children: React.React
   );
 }
 
-function badgeStyles(badge: Tutor["badge"]) {
+function badgeStyle(badge: string) {
   switch (badge) {
     case "Elite Tutor": return "bg-gradient-to-r from-amber-400 to-orange-500 text-white";
     case "Top Tutor": return "bg-gradient-to-r from-sky-400 to-cyan-500 text-white";
@@ -235,7 +260,9 @@ function badgeStyles(badge: Tutor["badge"]) {
   }
 }
 
-export function TutorCard({ tutor }: { tutor: Tutor }) {
+function TutorCard({ tutor }: { tutor: TutorListItem }) {
+  const avatarUrl = tutor.avatar_url || `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(tutor.full_name || "User")}&backgroundColor=1B2B5E,00C6FF`;
+
   return (
     <div className="group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-soft shadow-card-hover">
       <Link
@@ -243,22 +270,22 @@ export function TutorCard({ tutor }: { tutor: Tutor }) {
         params={{ id: tutor.id }}
         className="flex items-start gap-4"
       >
-        <img src={tutor.avatar} alt={tutor.name} className="h-14 w-14 shrink-0 rounded-xl" />
+        <img src={avatarUrl} alt={tutor.full_name || "Tutor"} className="h-14 w-14 shrink-0 rounded-xl" />
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <h3 className="truncate text-base font-bold tracking-tight">{tutor.name}</h3>
+              <h3 className="truncate text-base font-bold tracking-tight">{tutor.full_name || "Anonymous Tutor"}</h3>
               <p className="truncate text-xs text-muted-foreground">{tutor.year} • {tutor.branch}</p>
             </div>
-            <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${badgeStyles(tutor.badge)}`}>
-              {tutor.badge.replace(" Tutor", "")}
+            <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${badgeStyle(tutor.badge)}`}>
+              {tutor.badge?.replace(" Tutor", "") || "New"}
             </span>
           </div>
         </div>
       </Link>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
-        {tutor.subjects.slice(0, 3).map((s) => (
+        {(tutor.subjects || []).slice(0, 3).map((s) => (
           <Link
             key={s}
             to="/tutors/$id/offering/$subject"
@@ -272,14 +299,14 @@ export function TutorCard({ tutor }: { tutor: Tutor }) {
 
       <Link to="/tutors/$id" params={{ id: tutor.id }} className="mt-4 flex items-center gap-1 text-sm">
         <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-        <span className="font-semibold">{tutor.rating}</span>
-        <span className="text-muted-foreground">• {tutor.totalSessions} sessions</span>
+        <span className="font-semibold">{tutor.rating || 0}</span>
+        <span className="text-muted-foreground">• {tutor.total_sessions || 0} sessions</span>
       </Link>
 
       <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
         <div>
           <p className="text-xs text-muted-foreground">Starting from</p>
-          <p className="text-lg font-black tracking-tight text-brand">₹{tutor.startingPrice}</p>
+          <p className="text-lg font-black tracking-tight text-brand">₹{tutor.starting_price || 0}</p>
         </div>
         <Button asChild size="sm" variant="brand">
           <Link to="/tutors/$id" params={{ id: tutor.id }}>View Profile</Link>

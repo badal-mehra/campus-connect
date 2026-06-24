@@ -1,25 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import {
-  Search,
-  CalendarCheck,
-  TrendingUp,
-  Clock,
-  Zap,
-  CalendarRange,
-  GraduationCap,
-  Sparkles,
-  Award,
-  Crown,
-  Trophy,
-  Star,
-  CheckCircle2,
-  ArrowRight,
-  Shield,
-} from "lucide-react";
-import { tutors } from "@/lib/tutors-data";
+import { Search, CalendarCheck, TrendingUp, Clock, Zap, CalendarRange, GraduationCap, Sparkles, Award, Crown, Trophy, Star, CircleCheck as CheckCircle2, ArrowRight, Shield, Loader as Loader2 } from "lucide-react";
+import { getFeaturedTutors, getAllSubjects, type TutorListItem } from "@/lib/tutors.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,15 +20,38 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const [featuredTutors, setFeaturedTutors] = useState<TutorListItem[]>([]);
+  const [subjectsCount, setSubjectsCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const fetchFeatured = useServerFn(getFeaturedTutors);
+  const fetchSubjects = useServerFn(getAllSubjects);
+
+  useEffect(() => {
+    Promise.all([fetchFeatured(), fetchSubjects()])
+      .then(([tutorsData, subjectsData]) => {
+        setFeaturedTutors(Object.values(tutorsData) as TutorListItem[]);
+        setSubjectsCount((Object.values(subjectsData) as string[]).length);
+      })
+      .catch((e) => console.error("Failed to load data:", e))
+      .finally(() => setLoading(false));
+  }, [fetchFeatured, fetchSubjects]);
+
+  const totalSessions = featuredTutors.reduce((sum, t) => sum + (t.total_sessions || 0), 0);
+  const totalTutors = featuredTutors.length;
+  const avgRating = featuredTutors.length > 0
+    ? featuredTutors.reduce((sum, t) => sum + (t.rating || 0), 0) / featuredTutors.length
+    : 0;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <StatsBar />
+      <StatsBar sessions={totalSessions} tutors={totalTutors} subjects={subjectsCount} rating={avgRating} />
       <HowItWorks />
       <Packages />
       <BadgeSystem />
-      <FeaturedTutors />
+      <FeaturedTutors tutors={featuredTutors} loading={loading} />
       <CTASection />
       <Footer />
     </div>
@@ -77,8 +86,8 @@ function Hero() {
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/60">
             <span className="inline-flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-cyan-glow" /> Grade-verified tutors</span>
-            <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-cyan-glow" /> ₹49 trial sessions</span>
-            <span className="inline-flex items-center gap-1.5"><Star className="h-3.5 w-3.5 text-cyan-glow" /> 4.8 avg rating</span>
+            <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-cyan-glow" /> Flexible packages</span>
+            <span className="inline-flex items-center gap-1.5"><Star className="h-3.5 w-3.5 text-cyan-glow" /> Verified reviews</span>
           </div>
         </div>
       </div>
@@ -86,12 +95,12 @@ function Hero() {
   );
 }
 
-function StatsBar() {
+function StatsBar({ sessions, tutors, subjects, rating }: { sessions: number; tutors: number; subjects: number; rating: number }) {
   const stats = [
-    { value: "500+", label: "Sessions completed" },
-    { value: "200+", label: "Verified tutors" },
-    { value: "50+", label: "Subjects covered" },
-    { value: "4.8", label: "Avg student rating" },
+    { value: `${sessions}+`, label: "Sessions completed" },
+    { value: `${tutors}+`, label: "Verified tutors" },
+    { value: `${subjects}+`, label: "Subjects covered" },
+    { value: rating > 0 ? rating.toFixed(1) : "4.8", label: "Avg student rating" },
   ];
   return (
     <section className="border-b border-border bg-card">
@@ -197,42 +206,69 @@ function BadgeSystem() {
   );
 }
 
-function FeaturedTutors() {
-  const featured = tutors.slice(0, 3);
+function FeaturedTutors({ tutors, loading }: { tutors: TutorListItem[]; loading: boolean }) {
+  if (loading) {
+    return (
+      <section className="bg-secondary/40 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-brand" />
+          <p className="mt-4 text-muted-foreground">Loading featured tutors...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (tutors.length === 0) {
+    return (
+      <section className="bg-secondary/40 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+          <SectionHeader eyebrow="Featured tutors" title="Be the first to join" />
+          <p className="mt-6 text-muted-foreground">No tutors have signed up yet. Be the first to share your knowledge!</p>
+          <Button asChild size="lg" variant="brand" className="mt-6">
+            <Link to="/become-tutor">Become a Tutor <ArrowRight className="ml-1 h-4 w-4" /></Link>
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-secondary/40 py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader eyebrow="Featured tutors" title="The seniors students keep coming back to" />
         <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {featured.map((t) => (
-            <Link
-              key={t.id}
-              to="/tutors/$id"
-              params={{ id: t.id }}
-              className="group block rounded-2xl border border-border bg-card p-6 shadow-soft shadow-card-hover"
-            >
-              <div className="flex items-center gap-4">
-                <img src={t.avatar} alt={t.name} className="h-14 w-14 rounded-xl" />
-                <div className="min-w-0">
-                  <h3 className="truncate text-base font-bold tracking-tight">{t.name}</h3>
-                  <p className="text-xs text-muted-foreground">{t.year} • {t.branch}</p>
+          {tutors.slice(0, 3).map((t) => {
+            const avatarUrl = t.avatar_url || `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(t.full_name || "User")}&backgroundColor=1B2B5E,00C6FF`;
+            return (
+              <Link
+                key={t.id}
+                to="/tutors/$id"
+                params={{ id: t.id }}
+                className="group block rounded-2xl border border-border bg-card p-6 shadow-soft shadow-card-hover"
+              >
+                <div className="flex items-center gap-4">
+                  <img src={avatarUrl} alt={t.full_name || "Tutor"} className="h-14 w-14 rounded-xl" />
+                  <div className="min-w-0">
+                    <h3 className="truncate text-base font-bold tracking-tight">{t.full_name || "Anonymous Tutor"}</h3>
+                    <p className="text-xs text-muted-foreground">{t.year} • {t.branch}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {t.subjects.slice(0, 3).map((s) => (
-                  <span key={s} className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-brand">{s}</span>
-                ))}
-              </div>
-              <div className="mt-5 flex items-center justify-between">
-                <div className="flex items-center gap-1 text-sm">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  <span className="font-semibold">{t.rating}</span>
-                  <span className="text-muted-foreground">({t.totalSessions})</span>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {(t.subjects || []).slice(0, 3).map((s) => (
+                    <span key={s} className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-brand">{s}</span>
+                  ))}
                 </div>
-                <span className="text-sm font-bold text-brand">₹{t.startingPrice}+</span>
-              </div>
-            </Link>
-          ))}
+                <div className="mt-5 flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-sm">
+                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                    <span className="font-semibold">{t.rating || 0}</span>
+                    <span className="text-muted-foreground">({t.total_sessions || 0})</span>
+                  </div>
+                  <span className="text-sm font-bold text-brand">₹{t.starting_price || 0}+</span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
         <div className="mt-10 text-center">
           <Button asChild size="lg" variant="brand">
@@ -254,7 +290,7 @@ function CTASection() {
           Ready to actually understand the syllabus?
         </h2>
         <p className="relative mx-auto mt-4 max-w-xl text-white/75">
-          Start with a ₹49 trial session. No commitment, no awkwardness — just a senior who's been exactly where you are.
+          Find a verified senior tutor who's been exactly where you are. Real grades, real results.
         </p>
         <div className="relative mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button asChild size="xl" variant="hero">
