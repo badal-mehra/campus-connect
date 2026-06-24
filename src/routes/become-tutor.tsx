@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckCircle2, Upload, ArrowRight, ArrowLeft } from "lucide-react";
+import { CheckCircle2, Upload, ArrowRight, ArrowLeft, BookOpen, Clock, Calendar, Zap, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import {
   Select,
@@ -29,7 +29,12 @@ export const Route = createFileRoute("/become-tutor")({
   component: BecomeTutor,
 });
 
-const STEPS = ["Basic Info", "Academic Info", "Teaching Preferences", "Payment"];
+const STEPS = [
+  { id: "basic", title: "Basic Info", description: "Who are you?" },
+  { id: "academic", title: "Academic Info", description: "Verify your expertise" },
+  { id: "preferences", title: "Preferences", description: "How you want to teach" },
+  { id: "payment", title: "Payment", description: "Where to send the money" }
+];
 
 function BecomeTutor() {
   const [step, setStep] = useState(0);
@@ -47,104 +52,156 @@ function BecomeTutor() {
 
   if (done) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="flex min-h-screen flex-col bg-background">
         <Navbar />
-        <div className="mx-auto max-w-xl px-4 py-24 text-center sm:px-6">
-          <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-gradient-brand text-brand-foreground shadow-elegant">
-            <CheckCircle2 className="h-8 w-8" />
-          </span>
-          <h1 className="mt-6 text-3xl font-black tracking-tight">You're in the review queue</h1>
-          <p className="mt-3 text-muted-foreground">Your profile will be reviewed in 24 hours. We'll email you once you're live on Cognitute.</p>
-        </div>
+        <main className="flex-1 flex items-center justify-center p-6">
+          <div className="max-w-md text-center animate-in zoom-in-95 duration-500">
+            <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-primary/10 text-primary mb-6">
+              <ShieldCheck className="h-12 w-12" />
+            </div>
+            <h1 className="text-4xl font-black tracking-tight mb-4">Application Received!</h1>
+            <p className="text-muted-foreground text-lg mb-8">
+              Your profile is currently in the review queue. We usually process these within 24 hours. Keep an eye on your email!
+            </p>
+            <Button variant="outline" className="w-full" onClick={() => window.location.href = "/"}>
+              Return to Home
+            </Button>
+          </div>
+        </main>
         <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
 
-      <section className="border-b border-border bg-gradient-hero py-12 text-brand-foreground">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <h1 className="text-3xl font-black tracking-tight sm:text-5xl">Monetize Your Mastery.</h1>
-          <p className="mx-auto mt-3 max-w-xl text-white/75">Stop giving free advice in the library. Turn your late-night grinds and top grades into serious cash by coaching the next wave of juniors who need it most.</p>
-        </div>
-      </section>
+      <main className="flex-1 bg-secondary/20">
+        <div className="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8 lg:py-12">
+          
+          <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-2xl flex flex-col lg:flex-row min-h-[700px]">
+            {/* Left Sidebar - Progress & Motivation */}
+            <div className="bg-primary/5 border-b lg:border-b-0 lg:border-r border-border p-8 lg:w-1/3 flex flex-col justify-between">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight mb-2">Monetize Your Mastery</h2>
+                <p className="text-muted-foreground mb-10 text-sm">
+                  Turn your late-night grinds and top grades into serious cash by coaching the next wave of juniors.
+                </p>
 
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <ProgressBar step={step} />
+                <div className="space-y-6">
+                  {STEPS.map((s, i) => (
+                    <div key={s.id} className="flex items-start gap-4">
+                      <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors duration-300 ${
+                        i < step ? "bg-primary border-primary text-primary-foreground" : 
+                        i === step ? "border-primary text-primary" : 
+                        "border-muted text-muted-foreground"
+                      }`}>
+                        {i < step ? <CheckCircle2 className="h-5 w-5" /> : <span className="text-sm font-semibold">{i + 1}</span>}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className={`text-sm font-semibold ${i <= step ? "text-foreground" : "text-muted-foreground"}`}>
+                          {s.title}
+                        </span>
+                        <span className="text-xs text-muted-foreground">{s.description}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-        <form onSubmit={submit} className="mt-10 rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-8">
-          {step === 0 && <BasicInfo />}
-          {step === 1 && <AcademicInfo />}
-          {step === 2 && <TeachingPrefs />}
-          {step === 3 && <PaymentInfo />}
+              <div className="hidden lg:block mt-12 p-4 rounded-2xl bg-background/50 border border-border">
+                <div className="flex items-center gap-3 mb-2">
+                  <Zap className="h-5 w-5 text-yellow-500" />
+                  <span className="font-semibold text-sm">Pro Tip</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Complete profiles with verifiable grades get approved 3x faster and attract more students.
+                </p>
+              </div>
+            </div>
 
-          <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
-            <Button type="button" variant="ghost" onClick={prev} disabled={step === 0}>
-              <ArrowLeft className="h-4 w-4" /> Back
-            </Button>
-            <Button type="submit" variant="brand" size="lg">
-              {step === STEPS.length - 1 ? "Submit application" : <>Continue <ArrowRight className="h-4 w-4" /></>}
-            </Button>
+            {/* Right Side - Form Container */}
+            <div className="flex-1 p-6 sm:p-10 lg:p-12 relative flex flex-col">
+              <form onSubmit={submit} className="flex-1 flex flex-col">
+                
+                {/* Form Content with smooth entering animation */}
+                <div className="flex-1 animate-in slide-in-from-right-4 fade-in duration-500" key={step}>
+                  {step === 0 && <BasicInfo />}
+                  {step === 1 && <AcademicInfo />}
+                  {step === 2 && <TeachingPrefs />}
+                  {step === 3 && <PaymentInfo />}
+                </div>
+
+                {/* Form Navigation Controls */}
+                <div className="mt-10 flex items-center justify-between border-t border-border pt-6">
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    onClick={prev} 
+                    className={step === 0 ? "invisible" : ""}
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                  </Button>
+                  
+                  <Button type="submit" size="lg" className="min-w-[140px]">
+                    {step === STEPS.length - 1 ? "Submit Application" : <>Continue <ArrowRight className="ml-2 h-4 w-4" /></>}
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
-        </form>
-      </div>
+
+        </div>
+      </main>
 
       <Footer />
     </div>
   );
 }
 
-function ProgressBar({ step }: { step: number }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between text-xs font-semibold">
-        {STEPS.map((s, i) => (
-          <div key={s} className={`flex flex-col items-center gap-2 ${i <= step ? "text-brand" : "text-muted-foreground"}`}>
-            <span className={`grid h-8 w-8 place-items-center rounded-full text-xs ${i < step ? "bg-gradient-brand text-brand-foreground" : i === step ? "bg-brand text-brand-foreground" : "border border-border bg-card"}`}>
-              {i < step ? <CheckCircle2 className="h-4 w-4" /> : i + 1}
-            </span>
-            <span className="hidden text-center sm:block">{s}</span>
-          </div>
-        ))}
-      </div>
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-secondary">
-        <div className="h-full bg-gradient-brand transition-all" style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} />
-      </div>
-    </div>
-  );
-}
+// --- Form Step Components ---
 
 function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <Label className="text-sm font-semibold">{label}</Label>
       {children}
       {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
 }
+
+function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="mb-8">
+      <h2 className="text-3xl font-bold tracking-tight">{title}</h2>
+      <p className="mt-2 text-muted-foreground">{subtitle}</p>
+    </div>
+  );
+}
+
 function BasicInfo() {
   const years = ["1st Year", "2nd Year", "3rd Year", "Final Year"];
 
   return (
-    <div className="space-y-5">
-      <StepHeader title="Tell us about you" subtitle="The basics — we'll keep your contact info private." />
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Full name"><Input placeholder="Aarav Sharma" required /></Field>
-        <Field label="College / University"><Input placeholder="Lovely Professional University" required /></Field>
+    <div className="space-y-6">
+      <StepHeader title="Tell us about you" subtitle="The basics — we'll keep your personal contact info private." />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field label="Full name"><Input placeholder="Badal Mehra" className="h-11" required /></Field>
+        <Field label="Phone"><Input type="tel" placeholder="+91 98765 43210" className="h-11" required /></Field>
+        <div className="sm:col-span-2">
+          <Field label="College / University"><Input placeholder="Lovely Professional University" className="h-11" required /></Field>
+        </div>
         
-        {/* Modern Shadcn Select */}
-        <Field label="Year">
+        <Field label="Current Year">
           <Select required>
-            <SelectTrigger className="w-full h-10 rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:border-cyan-glow transition-colors">
-              <SelectValue placeholder="Select your current year" />
+            <SelectTrigger className="h-11 w-full">
+              <SelectValue placeholder="Select your year" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border border-border bg-popover text-popover-foreground shadow-md animate-in fade-in-80">
+            <SelectContent>
               {years.map((year) => (
-                <SelectItem key={year} value={year.toLowerCase().replace(" ", "-")} className="rounded-lg cursor-pointer transition-colors focus:bg-secondary">
+                <SelectItem key={year} value={year.toLowerCase().replace(" ", "-")}>
                   {year}
                 </SelectItem>
               ))}
@@ -152,59 +209,92 @@ function BasicInfo() {
           </Select>
         </Field>
 
-        <Field label="Branch"><Input placeholder="CSE" required /></Field>
-        <Field label="Phone"><Input type="tel" placeholder="+91 91035 7988" required /></Field>
-        <Field label="College Email"><Input type="email" placeholder="you@lpu.in" required /></Field>
+        <Field label="Branch"><Input placeholder="CSE" className="h-11" required /></Field>
+        
+        <div className="sm:col-span-2">
+          <Field label="College Email" hint="Use your .edu or institutional email for faster verification.">
+            <Input type="email" placeholder="badal@lpu.in" className="h-11" required />
+          </Field>
+        </div>
       </div>
     </div>
   );
 }
 
-
 function AcademicInfo() {
   return (
-    <div className="space-y-5">
-      <StepHeader title="Academic credentials" subtitle="Verified grades = trust + better pricing." />
-      <Field label="Subjects you can teach" hint="Comma separated — DSA, DBMS, Operating Systems">
-        <Input placeholder="DSA, DBMS, OS" required />
+    <div className="space-y-6">
+      <StepHeader title="Academic credentials" subtitle="Verified grades build trust and allow you to charge premium rates." />
+      
+      <Field label="Core Subjects You Can Teach" hint="E.g., Data Structures, Operating Systems, React">
+        <Input placeholder="DSA, Web Development, OS" className="h-11" required />
       </Field>
-      <Field label="Grade proof (transcript / report card)" hint="PDF or image, max 5MB">
-        <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-secondary/30 px-4 py-8 text-sm text-muted-foreground transition-colors hover:border-cyan-glow hover:bg-secondary/60">
-          <Upload className="h-4 w-4" /> Click to upload your transcript
-          <input type="file" className="hidden" />
-        </label>
+      
+      <Field label="Upload Transcript / Grade Proof">
+        <div className="group relative flex cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-muted-foreground/25 bg-secondary/20 px-6 py-10 transition-all hover:border-primary/50 hover:bg-primary/5">
+          <div className="rounded-full bg-background p-3 shadow-sm group-hover:scale-110 transition-transform">
+            <Upload className="h-6 w-6 text-primary" />
+          </div>
+          <div className="text-center">
+            <p className="text-sm font-medium">Click to upload or drag and drop</p>
+            <p className="text-xs text-muted-foreground mt-1">PDF, PNG, or JPG (max. 5MB)</p>
+          </div>
+          <input type="file" className="absolute inset-0 cursor-pointer opacity-0" required />
+        </div>
       </Field>
-      <Field label="Achievements (optional)" hint="GATE rank, hackathons, internships, publications…">
-        <Textarea placeholder="GSoC 2024 contributor, Smart India Hackathon winner..." rows={3} />
+
+      <Field label="Notable Achievements (Optional)" hint="Hackathon wins, internships, high ranks, etc.">
+        <Textarea placeholder="Built an internal campus tool used by 500+ students..." className="min-h-[100px] resize-none" />
       </Field>
     </div>
   );
 }
 
 function TeachingPrefs() {
-  const pkgs = ["Quick Session (1 hour)", "Exam Rescue (2 weeks)", "Monthly Plan (12 sessions)", "Full Semester"];
+  const pkgs = [
+    { id: "quick", title: "Quick Session", desc: "1 hour doubt clearing", icon: Zap },
+    { id: "exam", title: "Exam Rescue", desc: "2 weeks intensive", icon: BookOpen },
+    { id: "monthly", title: "Monthly Plan", desc: "12 detailed sessions", icon: Calendar },
+  ];
+
   return (
-    <div className="space-y-5">
-      <StepHeader title="How you want to teach" subtitle="Pick your packages and set your price." />
-      <Field label="Packages you'll offer">
-        <div className="grid gap-2 sm:grid-cols-2">
+    <div className="space-y-8">
+      <StepHeader title="Set your terms" subtitle="Decide how you want to teach and what you want to charge." />
+      
+      <Field label="Select Packages You'll Offer">
+        <div className="grid gap-4 sm:grid-cols-3">
           {pkgs.map((p) => (
-            <label key={p} className="flex cursor-pointer items-center gap-2 rounded-xl border border-border p-3 text-sm hover:border-cyan-glow">
-              <Checkbox defaultChecked />
-              <span>{p}</span>
+            <label key={p.id} className="relative flex cursor-pointer flex-col rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:border-primary has-[:checked]:border-primary has-[:checked]:ring-1 has-[:checked]:ring-primary">
+              <Checkbox className="absolute right-4 top-4" />
+              <p.icon className="mb-3 h-6 w-6 text-muted-foreground" />
+              <span className="font-semibold text-sm">{p.title}</span>
+              <span className="text-xs text-muted-foreground mt-1">{p.desc}</span>
             </label>
           ))}
         </div>
       </Field>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Starting price per hour (₹)"><Input type="number" placeholder="299" required /></Field>
-        <Field label="Weekly availability"><Input placeholder="Weekdays 7-10 PM" required /></Field>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field label="Hourly Rate (₹)" hint="You can adjust this later.">
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
+            <Input type="number" placeholder="299" className="h-11 pl-8" required />
+          </div>
+        </Field>
+        <Field label="Weekly Availability" hint="When are you free?">
+          <div className="relative">
+            <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input placeholder="Weekdays 7-10 PM" className="h-11 pl-9" required />
+          </div>
+        </Field>
       </div>
-      <Field label="Teaching mode">
-        <div className="grid gap-2 sm:grid-cols-3">
-          {["Online", "Offline", "Both"].map((m) => (
-            <label key={m} className="flex cursor-pointer items-center gap-2 rounded-xl border border-border p-3 text-sm hover:border-cyan-glow">
-              <Checkbox /> <span>{m}</span>
+
+      <Field label="Teaching Mode">
+        <div className="flex gap-4">
+          {["Online", "Offline", "Hybrid"].map((m) => (
+            <label key={m} className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-border py-3 text-sm transition-all hover:bg-secondary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground">
+              <input type="radio" name="mode" className="sr-only" defaultChecked={m === "Online"} /> 
+              <span className="font-medium">{m}</span>
             </label>
           ))}
         </div>
@@ -215,22 +305,29 @@ function TeachingPrefs() {
 
 function PaymentInfo() {
   return (
-    <div className="space-y-5">
-      <StepHeader title="Get paid" subtitle="UPI payouts within 48 hours after each session." />
-      <Field label="UPI ID" hint="e.g. yourname@oksbi"><Input placeholder="aarav@oksbi" required /></Field>
-      <Field label="Account holder name"><Input placeholder="Aarav Sharma" required /></Field>
-      <div className="rounded-xl border border-border bg-secondary/50 p-4 text-xs text-muted-foreground">
-        By submitting, you agree to Cognitute's Tutor Code of Conduct and consent to grade verification.
+    <div className="space-y-6">
+      <StepHeader title="Get paid easily" subtitle="We process payouts directly to your UPI within 48 hours of session completion." />
+      
+      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 mb-6">
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <Field label="Account Holder Name"><Input placeholder="Badal Mehra" className="h-11 bg-background" required /></Field>
+          </div>
+          <div className="sm:col-span-2">
+            <Field label="UPI ID" hint="Please ensure this UPI ID is active and accepts payments.">
+              <Input placeholder="username@upi" className="h-11 bg-background" required />
+            </Field>
+          </div>
+        </div>
       </div>
-    </div>
-  );
-}
 
-function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
-  return (
-    <div className="mb-4">
-      <h2 className="text-xl font-bold tracking-tight">{title}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
+      <div className="flex items-start gap-3 rounded-xl border border-border bg-secondary/30 p-4">
+        <ShieldCheck className="mt-0.5 h-5 w-5 text-muted-foreground shrink-0" />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          By clicking Submit Application, you agree to Cognitute's Tutor Code of Conduct and Terms of Service. 
+          You also consent to our team securely verifying your academic credentials. Your financial details are encrypted and stored securely.
+        </p>
+      </div>
     </div>
   );
 }
