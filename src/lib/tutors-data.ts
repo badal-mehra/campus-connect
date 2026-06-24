@@ -68,7 +68,7 @@ export interface Tutor {
   startingPrice: number;
   mode: "Online" | "Offline" | "Both";
   timings: string;
-  gradeProof: { subject: string; grade: string }[];
+  gradeProof: { subject: string; grade: string; topics: string[]; description: string }[];
   packages: Package[];
   reviews: Review[];
   ratingBreakdown: { 5: number; 4: number; 3: number; 2: number; 1: number };
