@@ -60,8 +60,8 @@ function BecomeTutor() {
 
       <section className="border-b border-border bg-gradient-hero py-12 text-brand-foreground">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <h1 className="text-3xl font-black tracking-tight sm:text-5xl">Teach. Earn. Build your rep.</h1>
-          <p className="mx-auto mt-3 max-w-xl text-white/75">Join 200+ verified seniors helping juniors crack their syllabus — and get paid for it.</p>
+          <h1 className="text-3xl font-black tracking-tight sm:text-5xl">Monetize Your Mastery.</h1>
+          <p className="mx-auto mt-3 max-w-xl text-white/75">Stop giving free advice in the library. Turn your late-night grinds and top grades into serious cash by coaching the next wave of juniors who need it most.</p>
         </div>
       </section>
 
@@ -126,11 +126,11 @@ function BasicInfo() {
       <StepHeader title="Tell us about you" subtitle="The basics — we'll keep your contact info private." />
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Full name"><Input placeholder="Aarav Sharma" required /></Field>
-        <Field label="College / University"><Input placeholder="IIT Madras" required /></Field>
+        <Field label="College / University"><Input placeholder="Lovely Professional University" required /></Field>
         <Field label="Year"><Input placeholder="3rd Year" required /></Field>
         <Field label="Branch"><Input placeholder="CSE" required /></Field>
-        <Field label="Phone"><Input type="tel" placeholder="+91 98765 43210" required /></Field>
-        <Field label="College Email"><Input type="email" placeholder="you@iitm.ac.in" required /></Field>
+        <Field label="Phone"><Input type="tel" placeholder="+91 91035 7988" required /></Field>
+        <Field label="College Email"><Input type="email" placeholder="you@lpu.in" required /></Field>
       </div>
     </div>
   );
