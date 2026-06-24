@@ -156,7 +156,11 @@ const baseTutors: BaseTutor[] = [
     startingPrice: 249,
     mode: "Online",
     timings: "Daily 6–9 PM",
-    gradeProof: [{ subject: "Signals", grade: "O" }, { subject: "Maths", grade: "O" }],
+    gradeProof: [
+      { subject: "Signals & Systems", grade: "O", topics: ["Fourier Series & Transform", "Laplace Transform", "Z-Transform", "Sampling & DT Signals", "LTI Systems"], description: "Make signals intuitive with visual explanations, solved problems and exam-focused shortcuts." },
+      { subject: "Digital Electronics", grade: "A+", topics: ["Boolean Algebra", "Combinational Circuits", "Sequential Circuits", "Flip-Flops", "FSM Design"], description: "From logic gates to finite state machines — build digital design confidence step by step." },
+      { subject: "Mathematics", grade: "O", topics: ["Linear Algebra", "Calculus", "Differential Equations", "Probability", "Transform Techniques"], description: "Engineering maths made concrete with applications in circuits, signals and computing." },
+    ],
     packages: mkPkgs(249),
     reviews: reviews1,
     ratingBreakdown: { 5: 78, 4: 15, 3: 3, 2: 0, 1: 0 },
