@@ -3,7 +3,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { getTutor, type Package, type Tutor } from "@/lib/tutors-data";
-import { ArrowLeft, Award, BadgeCheck, BookOpen, CheckCircle2, ChevronRight, Clock, GraduationCap, Globe, Mail, MapPin, Phone, Sparkles, Star, Timer, Trophy, Zap } from "lucide-react";
+import { ArrowLeft, Award, BadgeCheck, BookOpen, CheckCircle2, ChevronRight, Clock, GraduationCap, Globe, Mail, MapPin, Phone, Star, Timer, Trophy, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/tutors/$id")({
   loader: ({ params }): { tutor: Tutor } => {
