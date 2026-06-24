@@ -9,6 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CheckCircle2, Upload, ArrowRight, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/become-tutor")({
   head: () => ({
@@ -119,15 +126,32 @@ function Field({ label, children, hint }: { label: string; children: React.React
     </div>
   );
 }
-
 function BasicInfo() {
+  const years = ["1st Year", "2nd Year", "3rd Year", "Final Year"];
+
   return (
     <div className="space-y-5">
       <StepHeader title="Tell us about you" subtitle="The basics — we'll keep your contact info private." />
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Full name"><Input placeholder="Aarav Sharma" required /></Field>
         <Field label="College / University"><Input placeholder="Lovely Professional University" required /></Field>
-        <Field label="Year"><Input placeholder="3rd Year" required /></Field>
+        
+        {/* Modern Shadcn Select */}
+        <Field label="Year">
+          <Select required>
+            <SelectTrigger className="w-full h-10 rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:border-cyan-glow transition-colors">
+              <SelectValue placeholder="Select your current year" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border border-border bg-popover text-popover-foreground shadow-md animate-in fade-in-80">
+              {years.map((year) => (
+                <SelectItem key={year} value={year.toLowerCase().replace(" ", "-")} className="rounded-lg cursor-pointer transition-colors focus:bg-secondary">
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+
         <Field label="Branch"><Input placeholder="CSE" required /></Field>
         <Field label="Phone"><Input type="tel" placeholder="+91 91035 7988" required /></Field>
         <Field label="College Email"><Input type="email" placeholder="you@lpu.in" required /></Field>
@@ -135,6 +159,21 @@ function BasicInfo() {
     </div>
   );
 }
+// function BasicInfo() {
+//   return (
+//     <div className="space-y-5">
+//       <StepHeader title="Tell us about you" subtitle="The basics — we'll keep your contact info private." />
+//       <div className="grid gap-5 sm:grid-cols-2">
+//         <Field label="Full name"><Input placeholder="Aarav Sharma" required /></Field>
+//         <Field label="College / University"><Input placeholder="Lovely Professional University" required /></Field>
+//         <Field label="Year"><Input placeholder="3rd Year" required /></Field>
+//         <Field label="Branch"><Input placeholder="CSE" required /></Field>
+//         <Field label="Phone"><Input type="tel" placeholder="+91 91035 7988" required /></Field>
+//         <Field label="College Email"><Input type="email" placeholder="you@lpu.in" required /></Field>
+//       </div>
+//     </div>
+//   );
+// }
 
 function AcademicInfo() {
   return (
