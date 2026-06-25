@@ -44,7 +44,7 @@ function DashboardPage() {
 
   const handleAcceptBooking = async (bookingId: string) => {
     try {
-      await confirmBooking({ booking_id: bookingId, status: "Upcoming" });
+      await confirmBooking({ data: { booking_id: bookingId, status: "Upcoming" } });
       setBookings((prev) =>
         prev.map((b) => (b.id === bookingId ? { ...b, status: "Upcoming" } : b))
       );

@@ -69,7 +69,7 @@ export const updateBooking = createServerFn({ method: "POST" })
     if (!existing) throw new Error("Booking not found");
     if (existing.tutor_id !== context.userId) throw new Error("Not authorized");
 
-    const updateData: Record<string, unknown> = {};
+    const updateData: { status?: string; notes?: string } = {};
     if (data.status) updateData.status = data.status;
     if (data.notes !== undefined) updateData.notes = data.notes;
 

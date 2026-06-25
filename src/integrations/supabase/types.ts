@@ -14,23 +14,184 @@ export type Database = {
   }
   public: {
     Tables: {
+      availability: {
+        Row: {
+          created_at: string
+          day_of_week: number
+          id: string
+          is_available: boolean
+          time_slot: string
+          tutor_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: number
+          id?: string
+          is_available?: boolean
+          time_slot: string
+          tutor_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: number
+          id?: string
+          is_available?: boolean
+          time_slot?: string
+          tutor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_tutor_id_fkey"
+            columns: ["tutor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          mode: string
+          notes: string
+          package_id: string | null
+          package_name: string
+          session_date: string
+          session_time: string
+          status: string
+          student_id: string
+          student_name: string
+          subject: string
+          tutor_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          mode?: string
+          notes?: string
+          package_id?: string | null
+          package_name?: string
+          session_date: string
+          session_time?: string
+          status?: string
+          student_id: string
+          student_name?: string
+          subject?: string
+          tutor_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          mode?: string
+          notes?: string
+          package_id?: string | null
+          package_name?: string
+          session_date?: string
+          session_time?: string
+          status?: string
+          student_id?: string
+          student_name?: string
+          subject?: string
+          tutor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_tutor_id_fkey"
+            columns: ["tutor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grade_proofs: {
+        Row: {
+          created_at: string
+          description: string
+          grade: string
+          id: string
+          proof_url: string
+          subject: string
+          topics: string[]
+          tutor_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          grade?: string
+          id?: string
+          proof_url?: string
+          subject: string
+          topics?: string[]
+          tutor_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          grade?: string
+          id?: string
+          proof_url?: string
+          subject?: string
+          topics?: string[]
+          tutor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grade_proofs_tutor_id_fkey"
+            columns: ["tutor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           achievements: string[]
           avatar_url: string
+          badge: string
           bio: string
           branch: string
           cgpa: number | null
+          city: string
           college: string
           created_at: string
+          experience: string
           full_name: string
           hourly_rate: number | null
           id: string
+          is_verified: boolean
+          languages: string[]
           linkedin: string
+          mode: string
           phone: string
+          response_time: string
           role: string
           roll_no: string
           subjects: string[]
+          timings: string
+          total_earnings: number
+          total_sessions: number
           university: string
           updated_at: string
           year: string
@@ -38,19 +199,29 @@ export type Database = {
         Insert: {
           achievements?: string[]
           avatar_url?: string
+          badge?: string
           bio?: string
           branch?: string
           cgpa?: number | null
+          city?: string
           college?: string
           created_at?: string
+          experience?: string
           full_name?: string
           hourly_rate?: number | null
           id: string
+          is_verified?: boolean
+          languages?: string[]
           linkedin?: string
+          mode?: string
           phone?: string
+          response_time?: string
           role?: string
           roll_no?: string
           subjects?: string[]
+          timings?: string
+          total_earnings?: number
+          total_sessions?: number
           university?: string
           updated_at?: string
           year?: string
@@ -58,24 +229,82 @@ export type Database = {
         Update: {
           achievements?: string[]
           avatar_url?: string
+          badge?: string
           bio?: string
           branch?: string
           cgpa?: number | null
+          city?: string
           college?: string
           created_at?: string
+          experience?: string
           full_name?: string
           hourly_rate?: number | null
           id?: string
+          is_verified?: boolean
+          languages?: string[]
           linkedin?: string
+          mode?: string
           phone?: string
+          response_time?: string
           role?: string
           roll_no?: string
           subjects?: string[]
+          timings?: string
+          total_earnings?: number
+          total_sessions?: number
           university?: string
           updated_at?: string
           year?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string
+          created_at: string
+          id: string
+          rating: number
+          student_id: string
+          student_name: string
+          tutor_id: string
+          updated_at: string
+        }
+        Insert: {
+          comment?: string
+          created_at?: string
+          id?: string
+          rating: number
+          student_id: string
+          student_name?: string
+          tutor_id: string
+          updated_at?: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          student_id?: string
+          student_name?: string
+          tutor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_tutor_id_fkey"
+            columns: ["tutor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tutor_packages: {
         Row: {
@@ -119,15 +348,46 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      recalculate_tutor_stats: {
+        Args: { p_tutor_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "tutor" | "student"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -254,6 +514,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "tutor", "student"],
+    },
   },
 } as const
