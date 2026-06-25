@@ -169,20 +169,29 @@ export type Database = {
         Row: {
           achievements: string[]
           avatar_url: string
+          badge: string
           bio: string
           branch: string
           cgpa: number | null
+          city: string
           college: string
           created_at: string
+          experience: string
           full_name: string
           hourly_rate: number | null
           id: string
           is_verified: boolean
+          languages: string[]
           linkedin: string
+          mode: string
           phone: string
+          response_time: string
           role: string
           roll_no: string
           subjects: string[]
+          timings: string
+          total_earnings: number
+          total_sessions: number
           university: string
           updated_at: string
           year: string
@@ -190,20 +199,29 @@ export type Database = {
         Insert: {
           achievements?: string[]
           avatar_url?: string
+          badge?: string
           bio?: string
           branch?: string
           cgpa?: number | null
+          city?: string
           college?: string
           created_at?: string
+          experience?: string
           full_name?: string
           hourly_rate?: number | null
           id: string
           is_verified?: boolean
+          languages?: string[]
           linkedin?: string
+          mode?: string
           phone?: string
+          response_time?: string
           role?: string
           roll_no?: string
           subjects?: string[]
+          timings?: string
+          total_earnings?: number
+          total_sessions?: number
           university?: string
           updated_at?: string
           year?: string
@@ -211,20 +229,29 @@ export type Database = {
         Update: {
           achievements?: string[]
           avatar_url?: string
+          badge?: string
           bio?: string
           branch?: string
           cgpa?: number | null
+          city?: string
           college?: string
           created_at?: string
+          experience?: string
           full_name?: string
           hourly_rate?: number | null
           id?: string
           is_verified?: boolean
+          languages?: string[]
           linkedin?: string
+          mode?: string
           phone?: string
+          response_time?: string
           role?: string
           roll_no?: string
           subjects?: string[]
+          timings?: string
+          total_earnings?: number
+          total_sessions?: number
           university?: string
           updated_at?: string
           year?: string
