@@ -41,7 +41,8 @@ export type AdminStats = {
   total_revenue: number;
 };
 
-async function requireAdmin(context: { userId: string; supabase: { from: (t: string) => { select: (c: string) => { eq: (k: string, v: string) => { maybeSingle: () => Promise<{ data: { role: string } | null }> } } } } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function requireAdmin(context: { userId: string; supabase: any }) {
   const { data: profile } = await context.supabase
     .from("profiles")
     .select("role")
