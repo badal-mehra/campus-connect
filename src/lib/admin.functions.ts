@@ -41,8 +41,8 @@ export type AdminStats = {
   total_revenue: number;
 };
 
-async function requireAdmin(context: { userId: string; supabase: unknown }) {
-  const { data: profile } = await (context.supabase as ReturnType<typeof import("@/integrations/supabase/client").supabase>)
+async function requireAdmin(context: { userId: string; supabase: { from: (t: string) => { select: (c: string) => { eq: (k: string, v: string) => { maybeSingle: () => Promise<{ data: { role: string } | null }> } } } } }) {
+  const { data: profile } = await context.supabase
     .from("profiles")
     .select("role")
     .eq("id", context.userId)
@@ -135,7 +135,7 @@ export const getAllTutorsAdmin = createServerFn({ method: "GET" })
 
 export const verifyTutor = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator(verifyTutorSchema)
+  .inputValidator((input: unknown) => verifyTutorSchema.parse(input))
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
 
@@ -150,7 +150,7 @@ export const verifyTutor = createServerFn({ method: "POST" })
 
 export const updateTutorRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator(updateTutorRoleSchema)
+  .inputValidator((input: unknown) => updateTutorRoleSchema.parse(input))
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
 
@@ -186,7 +186,7 @@ export const getAllBookingsAdmin = createServerFn({ method: "GET" })
 
 export const adminUpdateBooking = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator(updateBookingStatusSchema)
+  .inputValidator((input: unknown) => updateBookingStatusSchema.parse(input))
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
 

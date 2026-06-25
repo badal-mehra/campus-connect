@@ -56,7 +56,7 @@ export const updateReview = createServerFn({ method: "POST" })
     if (!existing) throw new Error("Review not found");
     if (existing.student_id !== context.userId) throw new Error("Not authorized");
 
-    const updateData: Record<string, unknown> = {};
+    const updateData: { rating?: number; comment?: string } = {};
     if (data.rating !== undefined) updateData.rating = data.rating;
     if (data.comment !== undefined) updateData.comment = data.comment;
 
